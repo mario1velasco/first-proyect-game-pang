@@ -14,6 +14,7 @@ function Player(canvasId, sprite, x, y) {
     this.sprite.isReady = true;
     this.width = this.sprite.width * this.sprite.scale;
     this.height = this.sprite.height * this.sprite.scale;
+    this.widthFrame=Math.floor(this.width / this.sprite.frames);
     this.y = y - this.height;
   }).bind(this);
   this.sprite.frames = 22;
@@ -31,7 +32,7 @@ Player.prototype.onKeyDown = function() {
   if (event.keyCode == SPACEBAR) {
     this.shoot();
   } else if (event.keyCode == RIGHT_KEY) {
-    if ((this.x) < this.canvas.width - Math.floor(this.width / this.sprite.frames)) {
+    if ((this.x) < this.canvas.width - this.widthFrame) {
       this.moveToRight();
     }
   } else if (event.keyCode == LEFT_KEY) {
@@ -89,7 +90,7 @@ Player.prototype.draw = function() {
       this.sprite.height, // frame heigth
       this.x, // destination x
       this.y, // destination y
-      Math.floor(this.width / this.sprite.frames), // destination frame width
+      this.widthFrame, // destination frame width
       this.height); // destination frame heigth
   }
 };

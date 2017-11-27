@@ -24,16 +24,15 @@ Game.prototype.draw = function() {
   this.bg.draw();
   this.player.draw();
   this.baloon.updateBaloon();
-  this.frontColision();
+  this.colision();
   window.requestAnimationFrame(this.draw.bind(this));
 };
 
-Game.prototype.frontColision = function() {
-  if (this.player.y <= this.baloon.y) {
-    if ((this.player.x + (Math.floor(this.player.sprite.width / this.player.sprite.frames))) > this.baloon.x ){
-      if((this.player.x) < (this.baloon.x + this.baloon.width)){
-        alert("crush");
-      }
+Game.prototype.colision = function() {
+  if(this.baloon.y>=this.player.y){
+    if(this.player.x-(31)<this.baloon.x){
+       if((this.player.x+(31)>this.baloon.x))
+        alert("lATERAL crush");
     }
   }
 };

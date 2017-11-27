@@ -1,4 +1,4 @@
-var gravity = 0.3;
+var gravity = 0.01;
 
 function Baloon(canvasId, sprite) {
   // debugger
@@ -14,8 +14,8 @@ function Baloon(canvasId, sprite) {
     this.height = this.sprite.height * this.sprite.scale;
   }).bind(this);
 
-  this.x = 50;
-  this.y = 50;
+  this.x = 550;
+  this.y = 60;
   // this.speed = 5;
   this.vx = 1;
   this.vy = 2;
@@ -46,7 +46,7 @@ Baloon.prototype.updateBaloon = function() {
     this.vy *= -1;
     if(this.minimunY>85){
       this.noMoreGravity=true;
-      alert(this.minimunY);
+      // alert(this.minimunY);
     }
     this.minimunY = 480;
   }
