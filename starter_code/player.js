@@ -68,18 +68,14 @@ Player.prototype.moveToLeft = function() {
   }
   this.x -= 5;
 };
-//
-// Player.prototype.updateBird = function() {
-//   this.draw();
-//
-//   if ((this.y) > this.canvas.height || (this.y) < 0) {
-//
-//   }
-//   if ((this.x) > this.canvas.width || (this.x) < 0) {
-//
-//   }
-// };
-
+Player.prototype.die = function () {
+  if (this.sprite.frameIndex <= 4) {
+    this.sprite.frameIndex = 19;
+  }
+  if (this.sprite.frameIndex >= 11) {
+    this.sprite.frameIndex = 10;
+  }
+};
 Player.prototype.draw = function() {
   if (this.isReady) {
     this.ctx.drawImage(

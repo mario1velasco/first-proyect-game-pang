@@ -8,7 +8,7 @@ function Game(canvasId, width, height) {
 
   this.bg = new Background(this.canvas, "./images/bg.png", this.width, this.height);
   this.baloon = new Baloon(this.canvas, "./images/baloon1.png");
-  this.player = new Player(this.canvas, "./images/pang.png", 320/*this.width*/, this.height);
+  this.player = new Player(this.canvas, "./images/pang.png", this.width / 2, this.height);
 
 
   //this.intervl =setInterval(this.addObstacle.bind(this), 3000);
@@ -29,10 +29,29 @@ Game.prototype.draw = function() {
 };
 
 Game.prototype.colision = function() {
-  if(this.baloon.y>=this.player.y){
-    if(this.player.x-(31)<this.baloon.x){
-       if((this.player.x+(31)>this.baloon.x))
-        alert("lATERAL crush");
+  //If you change the value of the baloon os the player you have to re configurated all this numbers
+  if ((this.baloon.y + this.baloon.height) >= (this.player.y)) {
+    if ((this.player.x + 29) > this.baloon.x) {
+      if (this.player.x < this.baloon.x+33) {
+        this.player.die()
+        // debugger
+      }
     }
   }
+
+
+
+  // if (this.baloon.y >= this.player.y) {
+  //   //the 31 value i put it becuase it fits better than player.widthFrame
+  //   if ((this.player.x - (31) < this.baloon.x) &&
+  //   (this.player.x - (31) + this.player.widthFrame > this.baloon.x)) {
+  //     // if ((this.player.x + (31) > this.baloon.x))
+  //       alert("lATERAL crush");
+  //   }
+  //   if ((this.player.x + (31) < this.baloon.x) &&
+  //   (this.player.x + (31) + this.player.widthFrame > this.baloon.x)) {
+  //     // if ((this.player.x + (31) > this.baloon.x))
+  //       alert("lATERAL crush");
+  //   }
+  // }
 };

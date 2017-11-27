@@ -1,4 +1,4 @@
-var gravity = 0.01;
+var gravity = 0.1;
 
 function Baloon(canvasId, sprite) {
   // debugger
@@ -31,12 +31,12 @@ Baloon.prototype.isReady = function() {
 Baloon.prototype.updateBaloon = function() {
   this.draw();
   // Apply gravity
-  if (!this.noMoreGravity) {
+  // if (!this.noMoreGravity) {
     // this.minimunY = this.y;
     this.vy += gravity;
-  }else{
+  // }else{
     // this.vy+=0.002;
-  }
+  // }
   this.x += this.vx;
   this.y += this.vy;
   if (this.minimunY > this.y) {
@@ -50,7 +50,7 @@ Baloon.prototype.updateBaloon = function() {
     }
     this.minimunY = 480;
   }
-  if ((this.x + this.radius) > this.canvas.width || (this.x - this.radius) < 0) {
+  if ((this.x + (this.radius*2)) > this.canvas.width || (this.x) < 0) {
     this.vx *= -1;
   }
 };
