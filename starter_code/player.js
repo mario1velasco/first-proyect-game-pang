@@ -13,13 +13,12 @@ function Player(canvasId, sprite, x, y) {
   this.sprite.onload = (function() {
     this.sprite.isReady = true;
     this.width = this.sprite.width * this.sprite.scale;
-    // debugger
     this.height = this.sprite.height * this.sprite.scale;
     this.y = y - this.height;
   }).bind(this);
   this.sprite.frames = 22;
   this.sprite.frameIndex = 0;
-  this.x = x -100;
+  this.x = x - 100;
   document.onkeydown = this.onKeyDown.bind(this);
 }
 
@@ -29,21 +28,44 @@ Player.prototype.isReady = function() {
 
 Player.prototype.onKeyDown = function() {
 
-    if (event.keyCode == SPACEBAR) {}
-    else if (event.keyCode == RIGHT_KEY) {
-      if((this.x)< this.canvas.width-Math.floor(this.width / this.sprite.frames)){
-        this.moveToRight();
-      }
-    } else if (event.keyCode == LEFT_KEY) {
-      if((this.x) > 0){
-        this.moveToLeft();
-      }
+  if (event.keyCode == SPACEBAR) {
+    this.shoot();
+  } else if (event.keyCode == RIGHT_KEY) {
+    if ((this.x) < this.canvas.width - Math.floor(this.width / this.sprite.frames)) {
+      this.moveToRight();
     }
+  } else if (event.keyCode == LEFT_KEY) {
+    if ((this.x) > 0) {
+      this.moveToLeft();
+    }
+  }
 };
+Player.prototype.shoot = function() {
+  if (this.sprite.frameIndex <= 4) {
+    this.sprite.frameIndex = 21;
+  }else if(this.sprite.frameIndex >= 11){
+    this.sprite.frameIndex = 20;
+
+  }
+};
+
 Player.prototype.moveToRight = function() {
+  if (this.sprite.frameIndex >= 4) {
+    this.sprite.frameIndex = 0;
+  } else {
+    this.sprite.frameIndex++;
+  }
   this.x += 5;
 };
 Player.prototype.moveToLeft = function() {
+  if (this.sprite.frameIndex <= 4) {
+    this.sprite.frameIndex = 11;
+  }
+  if (this.sprite.frameIndex >= 15) {
+    this.sprite.frameIndex = 11;
+  } else {
+    this.sprite.frameIndex++;
+  }
   this.x -= 5;
 };
 //
