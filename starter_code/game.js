@@ -8,7 +8,7 @@ function Game(canvasId, width, height) {
 
   this.bg = new Background(this.canvas, "./images/bg.png", this.width, this.height);
   this.baloon = new Baloon(this.canvas, "./images/baloon1.png");
-  this.player = new Player(this.canvas, "./images/pang.png", this.width, this.height);
+  this.player = new Player(this.canvas, "./images/pang.png", 320/*this.width*/, this.height);
 
 
   //this.intervl =setInterval(this.addObstacle.bind(this), 3000);
@@ -22,8 +22,18 @@ Game.prototype.clear = function() {
 Game.prototype.draw = function() {
   this.clear();
   this.bg.draw();
-  this.baloon.updateBaloon();
   this.player.draw();
-
+  this.baloon.updateBaloon();
+  this.frontColision();
   window.requestAnimationFrame(this.draw.bind(this));
+};
+
+Game.prototype.frontColision = function() {
+  if (this.player.y <= this.baloon.y) {
+    if ((this.player.x + (Math.floor(this.player.sprite.width / this.player.sprite.frames))) > this.baloon.x ){
+      if((this.player.x) < (this.baloon.x + this.baloon.width)){
+        alert("crush");
+      }
+    }
+  }
 };

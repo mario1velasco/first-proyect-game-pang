@@ -30,8 +30,6 @@ Baloon.prototype.isReady = function() {
 
 Baloon.prototype.updateBaloon = function() {
   this.draw();
-  // update speed!
-  //this.x += this.vx;
   // Apply gravity
   if (!this.noMoreGravity) {
     // this.minimunY = this.y;
