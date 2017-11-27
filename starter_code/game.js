@@ -7,6 +7,7 @@ function Game(canvasId, width, height) {
   this.ctx = this.canvas.getContext('2d');
 
   this.bg = new Background(this.canvas, "./images/bg.png", this.width, this.height);
+  this.baloon = new Baloon(this.canvas, "./images/baloon1.png");
   this.player = new Player(this.canvas, "./images/pang.png", this.width, this.height);
 
 
@@ -21,6 +22,7 @@ Game.prototype.clear = function() {
 Game.prototype.draw = function() {
   this.clear();
   this.bg.draw();
+  this.baloon.updateBaloon();
   this.player.draw();
 
   window.requestAnimationFrame(this.draw.bind(this));

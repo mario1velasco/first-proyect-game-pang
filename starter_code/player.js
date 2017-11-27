@@ -45,7 +45,6 @@ Player.prototype.shoot = function() {
     this.sprite.frameIndex = 21;
   }else if(this.sprite.frameIndex >= 11){
     this.sprite.frameIndex = 20;
-
   }
 };
 
