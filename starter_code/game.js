@@ -9,7 +9,7 @@ function Game(canvasId, width, height) {
   this.bg = new Background(this.canvas, "./images/bg.png", this.width, this.height);
   this.baloon = new Baloon(this.canvas, "./images/baloon1.png");
   this.over = new Over(this.canvas, "./images/game-over.png");
-  this.player = new Player(this.canvas, "./images/pang.png", this.width / 2, this.height);
+  this.player = new Player(this.canvas, "./images/pang.png", 630, this.height);
   this.requestId = undefined;
   this.dead=false;
   //this.intervl =setInterval(this.addObstacle.bind(this), 3000);

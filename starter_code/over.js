@@ -13,7 +13,7 @@ function Over(canvasId, sprite) {
   this.x = 0;
   this.y = 0;
   this.intervl = "";
-  this.countdown=10;
+  this.countdown = 870;
 }
 
 Over.prototype.isReady = function() {
@@ -29,10 +29,7 @@ Over.prototype.draw = function() {
     this.width,
     this.height
   );
-  // this.intervl = setInterval(function() {
-  //   this.drawContinue();
-  // }, 3000);
-  this.drawContinue();
+this.drawContinue();
   if (this.width < 300)
     this.sprite.scale += 0.002;
   this.width = this.sprite.width * this.sprite.scale;
@@ -40,9 +37,11 @@ Over.prototype.draw = function() {
 };
 
 Over.prototype.drawContinue = function() {
-  // points = (Math.floor(this.frames/5));
-  this.ctx.font = '50px serif';
-  this.ctx.fillStyle = 'black';
-  this.ctx.fillText('Continue?: ' + this.countdown, 200, 330);
-  this.countdown--;
+    //110 son 13s lo justo para poner un sonido
+    if(this.countdown <= 870){
+      this.ctx.font = '50px serif';
+      this.ctx.fillStyle = 'black';
+      this.ctx.fillText('Continue?: ' + Math.floor(this.countdown/80), 170, 330);
+    }
+    this.countdown--;
 };
