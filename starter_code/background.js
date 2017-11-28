@@ -14,8 +14,8 @@ function Background(canvasId, sprite, width, height) {
     this.widthFrame = Math.floor(this.width / this.sprite.frames);
   }).bind(this);
   // debugger
-  this.sprite.frames = 16;
-  this.sprite.frameIndex = 14;
+  this.sprite.frames = 3;
+  this.sprite.frameIndex = Math.floor(Math.random()*3);
   this.x = 0;
 }
 
@@ -33,8 +33,8 @@ Background.prototype.draw = function() {
       this.sprite.height, // frame heigth
       this.x, // destination x
       0, // destination y
-      this.widthFrame, // destination frame width
-      this.height); // destination frame heigth
+      640,//this.widthFrame, // destination frame width
+      480);//this.height); // destination frame heigth
   }
 };
 /*
