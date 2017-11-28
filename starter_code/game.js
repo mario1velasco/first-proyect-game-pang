@@ -15,7 +15,7 @@ function Game(canvasId, width, height) {
   this.baloon = new Baloon(this.canvas, "./images/baloon1.png");
   this.over = new Over(this.canvas, "./images/game-over.png");
   this.player = new Player(this.canvas, "./images/pang.png", 530, this.height);
-  document.onkeydown = this.continue.bind(this);
+  document.onkeydown = this.drawContinue.bind(this);
   this.weaponsShoot=[];
   //this.points=0;
 }
@@ -23,18 +23,6 @@ function Game(canvasId, width, height) {
 Game.prototype.clear = function() {
   this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 };
-
-Game.prototype.continue = function() {
-  if (this.player.dead) {
-    if (event.keyCode == Y_KEY) {
-      var game = new Game("canvas-fb",640,480);
-      game.draw();
-    }
-  }else{
-    this.player.onKeyDown();
-  }
-};
-
 
 Game.prototype.draw = function() {
   if(this.beginCount){
@@ -48,17 +36,14 @@ Game.prototype.draw = function() {
     this.bg.draw();
     if(this.player.shoot){
       this.player.shoot=false;
-      // debugger
       this.weaponsShoot.push(new Weapon(this.canvas, "./images/weapons2.png", this.player.x, this.player.y));
     }
     for (var i = 0; i < this.weaponsShoot.length; i++) {
-      // debugger
+      this.weaponColision(i);
       if(this.weaponsShoot[i].y===0){
-        // debugger
         this.weaponsShoot.splice(i, 1);
       }else{
         this.weaponsShoot[i].draw();
-
       }
     }
     this.player.draw();
@@ -93,6 +78,35 @@ Game.prototype.playerColision = function() {
   }
 };
 
+Game.prototype.weaponColision = function (i) {
+  if((this.baloon.x===(this.weaponsShoot[i].x+this.weaponsShoot[i].widthFrame-10))||
+  (this.weaponsShoot[i].x===(this.baloon.x+this.baloon.width))){
+    if(this.weaponsShoot[i].y<this.baloon.y)
+    alert("cool2");
+  }
+  if(this.weaponsShoot[i].y===(this.baloon.y+this.baloon.height)){
+    alert("cool1");
+  }
+  // if(this.baloon.x===(this.weaponsShoot[i].x+this.weaponsShoot[i].widthFrame-10)){
+  //   if(this.weaponsShoot[i].y<this.baloon.y)
+  //   alert("cool1");
+  // }
+  // if(this.weaponsShoot[i].x===(this.baloon.x+this.baloon.width)){
+  //   if(this.weaponsShoot[i].y<this.baloon.y)
+  //   alert("cool2");
+  // }
+};
+
+Game.prototype.drawContinue = function() {
+  if (this.player.dead) {
+    if (event.keyCode == Y_KEY) {
+      var game = new Game("canvas-fb",640,480);
+      game.draw();
+    }
+  }else{
+    this.player.onKeyDown();
+  }
+};
 
 Game.prototype.drawCountdownBeginning = function(x,y) {
   //1100 son 13s lo justo para poner un sonido

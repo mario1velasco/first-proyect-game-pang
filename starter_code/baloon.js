@@ -14,8 +14,8 @@ function Baloon(canvasId, sprite) {
     this.height = this.sprite.height * this.sprite.scale;
   }).bind(this);
 
-  this.x = 550;
-  this.y = 60;
+  this.x = 200;
+  this.y = 260;
   // this.speed = 5;
   this.vx = 1;
   this.vy = 2;
