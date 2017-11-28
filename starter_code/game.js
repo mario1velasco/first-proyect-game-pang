@@ -46,13 +46,17 @@ Game.prototype.draw = function() {
     this.clear();
     this.bg.draw();
     this.player.draw();
+    // if(this.player.shoot()){
+    //
+    //   alert("shoot");
+    // }
     this.baloon.updateBaloon();
     this.colision();
-
   } else {
     this.clear();
     this.bg.draw();
     this.player.draw();
+    this.baloon.draw();
     this.over.draw();
   }
   this.requestId = window.requestAnimationFrame(this.draw.bind(this));
@@ -63,12 +67,12 @@ Game.prototype.colision = function() {
   if ((this.baloon.y + this.baloon.height) >= (this.player.y)) {
     if ((this.player.x + 29) > this.baloon.x) {
       if (this.player.x < this.baloon.x + 33) {
+        // debugger
         this.player.die();
         this.baloon.updateBaloon();
         this.baloon.updateBaloon();
         this.baloon.updateBaloon();
         this.player.draw();
-        this.player.dead = true;
         // window.cancelAnimationFrame(requestId);
         // requestId = undefined;
 

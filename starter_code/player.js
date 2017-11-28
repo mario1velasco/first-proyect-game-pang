@@ -30,7 +30,6 @@ Player.prototype.isReady = function() {
 };
 
 Player.prototype.onKeyDown = function() {
-  if (!this.dead) {
     if (event.keyCode == SPACEBAR) {
       this.shoot();
     } else if (event.keyCode == RIGHT_KEY) {
@@ -42,14 +41,18 @@ Player.prototype.onKeyDown = function() {
         this.moveToLeft();
       }
     }
-  }
+
 };
 Player.prototype.shoot = function() {
+
   if (this.sprite.frameIndex <= 4) {
     this.sprite.frameIndex = 21;
+    return true;
   } else if (this.sprite.frameIndex >= 11 && this.sprite.frameIndex <= 19) {
     this.sprite.frameIndex = 20;
+    return true;
   }
+  return false;
 };
 
 Player.prototype.moveToRight = function() {
