@@ -22,6 +22,7 @@ function Player(canvasId, sprite, x, y) {
   this.x = x - 100;
   this.dead = false;
   this.continue=false;
+  this.shoot=false;
   document.onkeydown = this.onKeyDown.bind(this);
 }
 
@@ -31,7 +32,7 @@ Player.prototype.isReady = function() {
 
 Player.prototype.onKeyDown = function() {
     if (event.keyCode == SPACEBAR) {
-      this.shoot();
+      this.shooting();
     } else if (event.keyCode == RIGHT_KEY) {
       if ((this.x) < this.canvas.width - this.widthFrame) {
         this.moveToRight();
@@ -43,16 +44,14 @@ Player.prototype.onKeyDown = function() {
     }
 
 };
-Player.prototype.shoot = function() {
-
+Player.prototype.shooting = function() {
   if (this.sprite.frameIndex <= 4) {
     this.sprite.frameIndex = 21;
-    return true;
+    this.shoot= true;
   } else if (this.sprite.frameIndex >= 11 && this.sprite.frameIndex <= 19) {
     this.sprite.frameIndex = 20;
-    return true;
+    this.shoot= true;
   }
-  return false;
 };
 
 Player.prototype.moveToRight = function() {

@@ -16,6 +16,7 @@ function Game(canvasId, width, height) {
   this.over = new Over(this.canvas, "./images/game-over.png");
   this.player = new Player(this.canvas, "./images/pang.png", 530, this.height);
   document.onkeydown = this.continue.bind(this);
+  this.weaponsShoot=[];
   //this.points=0;
 }
 
@@ -45,11 +46,16 @@ Game.prototype.draw = function() {
   else if (!this.player.dead) {
     this.clear();
     this.bg.draw();
+    if(this.player.shoot){
+      this.player.shoot=false;
+      // debugger
+      this.weaponsShoot.push(new Weapon(this.canvas, "./images/weapons2.png", this.player.x, this.player.y));
+    }
+    for (var i = 0; i < this.weaponsShoot.length; i++) {
+      // debugger
+        this.weaponsShoot[i].draw();
+    }
     this.player.draw();
-    // if(this.player.shoot()){
-    //
-    //   alert("shoot");
-    // }
     this.baloon.updateBaloon();
     this.colision();
   } else {
