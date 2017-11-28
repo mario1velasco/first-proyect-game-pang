@@ -11,7 +11,7 @@ function Game(canvasId, width, height) {
   this.beginCount=false;
   this.countdown=320;
   // debugger
-  this.bg = new Background(this.canvas, "./images/bg.png", this.width, this.height);
+  this.bg = new Background(this.canvas, "./images/backgrounds.png", this.width, this.height);
   this.baloon = new Baloon(this.canvas, "./images/baloon1.png");
   this.over = new Over(this.canvas, "./images/game-over.png");
   this.player = new Player(this.canvas, "./images/pang.png", 530, this.height);
