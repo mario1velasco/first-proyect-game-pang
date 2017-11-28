@@ -1,3 +1,5 @@
+var Y_KEY=89;
+
 function Game(canvasId, width, height) {
   this.x = 0;
   this.y = 0;
@@ -5,14 +7,15 @@ function Game(canvasId, width, height) {
   this.height = height;
   this.canvas = document.getElementById(canvasId);
   this.ctx = this.canvas.getContext('2d');
-
+  this.requestId = undefined;
+  this.beginCount=false;
+  this.countdown=320;
+  // debugger
   this.bg = new Background(this.canvas, "./images/bg.png", this.width, this.height);
   this.baloon = new Baloon(this.canvas, "./images/baloon1.png");
   this.over = new Over(this.canvas, "./images/game-over.png");
-  this.player = new Player(this.canvas, "./images/pang.png", 630, this.height);
-  this.requestId = undefined;
-  this.dead=false;
-  //this.intervl =setInterval(this.addObstacle.bind(this), 3000);
+  this.player = new Player(this.canvas, "./images/pang.png", 530, this.height);
+  document.onkeydown = this.continue.bind(this);
   //this.points=0;
 }
 
@@ -20,15 +23,33 @@ Game.prototype.clear = function() {
   this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 };
 
+Game.prototype.continue = function() {
+  if (this.player.dead) {
+    if (event.keyCode == Y_KEY) {
+      var game = new Game("canvas-fb",640,480);
+      game.draw();
+    }
+  }else{
+    this.player.onKeyDown();
+  }
+};
+
+
 Game.prototype.draw = function() {
-  if(!this.dead){
+  if(this.beginCount){
+    this.bg.draw();
+    this.baloon.draw();
+    this.player.draw();
+    this.drawCountdownBeginning(150,200);
+  }
+  else if (!this.player.dead) {
     this.clear();
     this.bg.draw();
     this.player.draw();
     this.baloon.updateBaloon();
     this.colision();
 
-  }else{
+  } else {
     this.clear();
     this.bg.draw();
     this.player.draw();
@@ -47,15 +68,15 @@ Game.prototype.colision = function() {
         this.baloon.updateBaloon();
         this.baloon.updateBaloon();
         this.player.draw();
-        this.dead=true;
+        this.player.dead = true;
         // window.cancelAnimationFrame(requestId);
         // requestId = undefined;
 
       }
     }
   }
-
-Game.prototype.dieScene = function () {
+};
+Game.prototype.dieScene = function() {
   this.ctx.drawImage(
     this.sprite,
     0,
@@ -69,17 +90,16 @@ Game.prototype.dieScene = function () {
   );
 };
 
-  // if (this.baloon.y >= this.player.y) {
-  //   //the 31 value i put it becuase it fits better than player.widthFrame
-  //   if ((this.player.x - (31) < this.baloon.x) &&
-  //   (this.player.x - (31) + this.player.widthFrame > this.baloon.x)) {
-  //     // if ((this.player.x + (31) > this.baloon.x))
-  //       alert("lATERAL crush");
-  //   }
-  //   if ((this.player.x + (31) < this.baloon.x) &&
-  //   (this.player.x + (31) + this.player.widthFrame > this.baloon.x)) {
-  //     // if ((this.player.x + (31) > this.baloon.x))
-  //       alert("lATERAL crush");
-  //   }
-  // }
+Game.prototype.drawCountdownBeginning = function(x,y) {
+  //1100 son 13s lo justo para poner un sonido
+  if (this.countdown <= 870) {
+    this.ctx.font = '50px serif';
+    this.ctx.fillStyle = 'black';
+    this.ctx.fillText('Are you ready? ' + Math.floor(this.countdown / 80), x, y);
+  }
+  if (Math.floor(this.countdown / 80) > 0){
+    this.countdown--;
+  }else{
+    this.beginCount=false;
+  }
 };

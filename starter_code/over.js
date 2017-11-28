@@ -29,19 +29,25 @@ Over.prototype.draw = function() {
     this.width,
     this.height
   );
-this.drawContinue();
+  this.drawContinue(170,330);
+  // this.drawContinue(170,30);
   if (this.width < 300)
     this.sprite.scale += 0.002;
   this.width = this.sprite.width * this.sprite.scale;
   this.height = this.sprite.height * this.sprite.scale;
 };
 
-Over.prototype.drawContinue = function() {
-    //110 son 13s lo justo para poner un sonido
-    if(this.countdown <= 870){
-      this.ctx.font = '50px serif';
-      this.ctx.fillStyle = 'black';
-      this.ctx.fillText('Continue?: ' + Math.floor(this.countdown/80), 170, 330);
-    }
+Over.prototype.drawContinue = function(x,y) {
+  //1100 son 13s lo justo para poner un sonido
+  if (this.countdown <= 870) {
+    this.ctx.font = '50px serif';
+    this.ctx.fillStyle = 'black';
+    this.ctx.fillText('Continue? ' + Math.floor(this.countdown / 80), x, y);
+    // this.ctx.fillText('Press Y.');
+    this.ctx.font = '50px serif';
+    this.ctx.fillStyle = 'black';
+    this.ctx.fillText('Press Y ', x, y+50);
+  }
+  if (Math.floor(this.countdown / 80) > 0)
     this.countdown--;
 };
