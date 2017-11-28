@@ -87,17 +87,14 @@ Game.prototype.weaponColision = function (i) {
   }
   if((this.weaponsShoot[i].y<=(this.baloon.y+this.baloon.height))&&
   (this.weaponsShoot[i].y>=(this.baloon.y+this.baloon.height-6))){
-    if(this.weaponsShoot[i].x<this.baloon.x)
-    alert("cool1");
+    //if(this.weaponsShoot[i].x<this.baloon.x)
+    debugger
+    // alert("cool1");
+    if(this.weaponsShoot[i].x<=this.baloon.x+this.baloon.width){
+      console.log("");
+    }
   }
-  // if(this.baloon.x===(this.weaponsShoot[i].x+this.weaponsShoot[i].widthFrame-10)){
-  //   if(this.weaponsShoot[i].y<this.baloon.y)
-  //   alert("cool1");
-  // }
-  // if(this.weaponsShoot[i].x===(this.baloon.x+this.baloon.width)){
-  //   if(this.weaponsShoot[i].y<this.baloon.y)
-  //   alert("cool2");
-  // }
+
 };
 
 Game.prototype.drawContinue = function() {
