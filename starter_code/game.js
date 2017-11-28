@@ -53,11 +53,17 @@ Game.prototype.draw = function() {
     }
     for (var i = 0; i < this.weaponsShoot.length; i++) {
       // debugger
+      if(this.weaponsShoot[i].y===0){
+        // debugger
+        this.weaponsShoot.splice(i, 1);
+      }else{
         this.weaponsShoot[i].draw();
+
+      }
     }
     this.player.draw();
     this.baloon.updateBaloon();
-    this.colision();
+    this.playerColision();
   } else {
     this.clear();
     this.bg.draw();
@@ -68,7 +74,7 @@ Game.prototype.draw = function() {
   this.requestId = window.requestAnimationFrame(this.draw.bind(this));
 };
 
-Game.prototype.colision = function() {
+Game.prototype.playerColision = function() {
   //If you change the value of the baloon os the player you have to re configurated all this numbers
   if ((this.baloon.y + this.baloon.height) >= (this.player.y)) {
     if ((this.player.x + 29) > this.baloon.x) {
@@ -86,19 +92,7 @@ Game.prototype.colision = function() {
     }
   }
 };
-Game.prototype.dieScene = function() {
-  this.ctx.drawImage(
-    this.sprite,
-    0,
-    0,
-    this.sprite.width,
-    this.sprite.height,
-    this.x,
-    this.y,
-    this.width,
-    this.height
-  );
-};
+
 
 Game.prototype.drawCountdownBeginning = function(x,y) {
   //1100 son 13s lo justo para poner un sonido

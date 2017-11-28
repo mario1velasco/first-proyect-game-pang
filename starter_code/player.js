@@ -30,6 +30,21 @@ Player.prototype.isReady = function() {
   return this.sprite.isReady;
 };
 
+Player.prototype.draw = function() {
+  if (this.isReady) {
+    this.ctx.drawImage(
+      this.sprite, // Image
+      this.sprite.frameIndex * Math.floor(this.sprite.width / this.sprite.frames), // source x
+      0, // source y: allways 0 for this image
+      Math.floor(this.sprite.width / this.sprite.frames), // frame width
+      this.sprite.height, // frame heigth
+      this.x, // destination x
+      this.y, // destination y
+      this.widthFrame, // destination frame width
+      this.height); // destination frame heigth
+    }
+  };
+
 Player.prototype.onKeyDown = function() {
     if (event.keyCode == SPACEBAR) {
       this.shooting();
@@ -44,6 +59,7 @@ Player.prototype.onKeyDown = function() {
     }
 
 };
+
 Player.prototype.shooting = function() {
   if (this.sprite.frameIndex <= 4) {
     this.sprite.frameIndex = 21;
@@ -62,6 +78,7 @@ Player.prototype.moveToRight = function() {
   }
   this.x += 5;
 };
+
 Player.prototype.moveToLeft = function() {
   if (this.sprite.frameIndex <= 4) {
     this.sprite.frameIndex = 11;
@@ -73,6 +90,7 @@ Player.prototype.moveToLeft = function() {
   }
   this.x -= 5;
 };
+
 Player.prototype.die = function() {
   this.dead = true;
   if (this.sprite.frameIndex <= 4) {
@@ -80,19 +98,5 @@ Player.prototype.die = function() {
   }
   if (this.sprite.frameIndex >= 11) {
     this.sprite.frameIndex = 10;
-  }
-};
-Player.prototype.draw = function() {
-  if (this.isReady) {
-    this.ctx.drawImage(
-      this.sprite, // Image
-      this.sprite.frameIndex * Math.floor(this.sprite.width / this.sprite.frames), // source x
-      0, // source y: allways 0 for this image
-      Math.floor(this.sprite.width / this.sprite.frames), // frame width
-      this.sprite.height, // frame heigth
-      this.x, // destination x
-      this.y, // destination y
-      this.widthFrame, // destination frame width
-      this.height); // destination frame heigth
   }
 };
