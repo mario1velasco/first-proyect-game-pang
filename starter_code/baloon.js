@@ -15,7 +15,7 @@ function Baloon(canvasId, sprite) {
   }).bind(this);
 
   this.x = 200;
-  this.y = 260;
+  this.y = 180;
   // this.speed = 5;
   this.vx = 1;
   this.vy = 2;
