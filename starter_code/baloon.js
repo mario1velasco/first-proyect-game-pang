@@ -15,7 +15,7 @@ function Baloon(canvasId, sprite) {
     this.radius = this.width/2;
   }).bind(this);
 
-  this.x = 270;
+  this.x = 530;
   this.y = 280;
   // this.speed = 5;
   this.vx = 1;

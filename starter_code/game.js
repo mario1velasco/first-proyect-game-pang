@@ -9,13 +9,12 @@ function Game(canvasId, width, height) {
   this.ctx = this.canvas.getContext('2d');
   this.requestId = undefined;
   this.beginCount = false;
-  this.playerDead = false;
   this.countdown = 320;
   // debugger
   this.bg = new Background(this.canvas, "./images/bg3units.png", this.width, this.height);
   this.baloon = new Baloon(this.canvas, "./images/baloon1.png");
   this.over = new Over(this.canvas, "./images/game-over.png");
-  this.player = new Player(this.canvas, "./images/pang.png", 570, this.height);
+  this.player = new Player(this.canvas, "./images/pang.png", 370, this.height);
   document.onkeydown = this.drawContinue.bind(this);
   this.weaponsShoot = [];
   //this.points=0;
@@ -26,26 +25,12 @@ Game.prototype.clear = function() {
 };
 
 Game.prototype.draw = function() {
-  //If you want a countdown
   if (this.beginCount) {
     this.bg.draw();
     this.baloon.draw();
     this.player.draw();
     this.drawCountdownBeginning(150, 200);
-    //if there is a colision
-  } else if (this.playerColision()) {
-    if (!this.playerDead) {
-      this.clear();
-      this.bg.draw();
-      this.over.draw();
-      this.player.draw();
-      this.baloon.updateBaloon();
-      this.baloon.updateBaloon();
-      this.baloon.updateBaloon();
-      this.playerDead = true;
-    }
-    //If player is not dead
-  } else {
+  } else if (!this.player.dead) {
     this.clear();
     this.bg.draw();
     if (this.player.shoot) {
@@ -62,57 +47,74 @@ Game.prototype.draw = function() {
     }
     this.player.draw();
     this.baloon.updateBaloon();
+    this.playerColision();
+  } else {
+    this.clear();
+    this.bg.draw();
+    this.player.draw();
+    this.baloon.draw();
+    this.over.draw();
   }
   this.requestId = window.requestAnimationFrame(this.draw.bind(this));
 };
 
 Game.prototype.playerColision = function() {
-  var isColision = false;
+  var isColision=false;
   //COLISION VERTICAL
   if ((this.baloon.y + this.baloon.height) > this.player.y) {
-    if (((this.baloon.x + Math.floor(this.baloon.width)) === this.player.x + 3)) {
-      isColision = true;
+    if (((this.baloon.x + Math.floor(this.baloon.width)) === this.player.x+3)) {
+      isColision=true;
       // debugger
       // alert("COL VERTICAL Izquierda");
     }
-    if ((this.baloon.x === (this.player.x + Math.floor(this.player.widthFrame) - 10))) {
-      isColision = true;
+    if ((this.baloon.x === (this.player.x + Math.floor(this.player.widthFrame)-10))) {
+      isColision=true;
       // debugger
       // alert("COL VERTICAL Derecha");
     }
   }
   //COLISON FRONTAL
   //primero comprueba que el y de la bola y player coincidan +-6
-  if ((this.player.y <= (this.baloon.y + this.baloon.height)) &&
-    (this.player.y >= (this.baloon.y + this.baloon.height - 6))) {
+  if((this.player.y<=(this.baloon.y+this.baloon.height))&&
+  (this.player.y>=(this.baloon.y+this.baloon.height-6))){
     //Calcula para cada pixel del player x, si esta entre la bola, si esta hay colisión
-    for (var j = 0; j <= this.player.widthFrame - 10; j++) {
+    for(var j=0;j<=this.player.widthFrame-10;j++){
       //Lado derecho
-      if (this.player.x + j > this.baloon.x) {
+      if(this.player.x+j>this.baloon.x){
         //Lado izquierdo
-        if (this.player.x + j + 3 < this.baloon.x + Math.floor(this.baloon.width)) {
-          isColision = true;
+        if(this.player.x+j+3<this.baloon.x+Math.floor(this.baloon.width)){
+          isColision=true;
           // debugger
           // alert("COL FRONTAL");
         }
       }
     }
   }
-  if (isColision) {
-    // debugger
+  if(isColision){
     this.player.die();
+    this.baloon.updateBaloon();
+    this.baloon.updateBaloon();
+    this.baloon.updateBaloon();
+    this.player.draw();
+
+    // window.cancelAnimationFrame(requestId);
+    // requestId = undefined;
   }
-  return isColision;
 };
 
 Game.prototype.weaponColision = function(i) {
   //COLISION VERTICAL
-  if ((this.baloon.x === (this.weaponsShoot[i].x + this.weaponsShoot[i].widthFrame - 10)) ||
-    (this.weaponsShoot[i].x === (this.baloon.x + this.baloon.width))) {
-    if (this.weaponsShoot[i].y < this.baloon.y)
-      // alert("cool2");
-      console.log("");
+  if (this.weaponsShoot[i].y < this.baloon.y){
+    if ((this.baloon.x === (this.weaponsShoot[i].x + this.weaponsShoot[i].widthFrame-10))){
+      //FUNCIONA
+      // alert("COL VERTICAL Derecha");
+    }
+    if((this.weaponsShoot[i].x === (this.baloon.x + this.baloon.width))){
+      debugger
+      // alert("COL VERTICAL Izquierda");
+    }
   }
+
   //COLISON FRONTAL
   //primero comprueba que el y de la bola y player coincidan +-6
   if ((this.weaponsShoot[i].y <= (this.baloon.y + this.baloon.height)) &&
@@ -122,16 +124,18 @@ Game.prototype.weaponColision = function(i) {
       if (this.weaponsShoot[i].x + j > this.baloon.x) {
         if (this.weaponsShoot[i].x + j < this.baloon.x + this.baloon.width) {
           // debugger
-          // alert();
+          // alert("Frontal colision");
+          debugger
           return true;
         }
       }
     }
   }
+
 };
 
 Game.prototype.drawContinue = function() {
-  if (this.playerDead) {
+  if (this.player.dead) {
     if (event.keyCode == Y_KEY) {
       var game = new Game("canvas-fb", 640, 480);
       game.draw();

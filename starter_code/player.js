@@ -20,6 +20,7 @@ function Player(canvasId, sprite, x, y) {
   this.sprite.frames = 22;
   this.sprite.frameIndex = 0;
   this.x = x - 100;
+  this.dead = false;
   this.continue=false;
   this.shoot=false;
   document.onkeydown = this.onKeyDown.bind(this);
@@ -91,6 +92,7 @@ Player.prototype.moveToLeft = function() {
 };
 
 Player.prototype.die = function() {
+  this.dead = true;
   if (this.sprite.frameIndex <= 4) {
     this.sprite.frameIndex = 19;
   }
