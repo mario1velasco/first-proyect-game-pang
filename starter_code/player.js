@@ -36,8 +36,8 @@ Player.prototype.draw = function() {
       this.sprite, // Image
       this.sprite.frameIndex * Math.floor(this.sprite.width / this.sprite.frames), // source x
       0, // source y: allways 0 for this image
-      Math.floor(this.sprite.width / this.sprite.frames), // frame width
-      this.sprite.height, // frame heigth
+      Math.floor(this.sprite.width / this.sprite.frames)-3, // frame width quito -3 porque sobre 3 px del lado derecho
+      this.sprite.height-1, // frame heigth sobra 1px de abajo
       this.x, // destination x
       this.y, // destination y
       this.widthFrame, // destination frame width
