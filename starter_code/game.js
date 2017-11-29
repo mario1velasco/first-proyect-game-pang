@@ -87,11 +87,13 @@ Game.prototype.weaponColision = function (i) {
   }
   if((this.weaponsShoot[i].y<=(this.baloon.y+this.baloon.height))&&
   (this.weaponsShoot[i].y>=(this.baloon.y+this.baloon.height-6))){
-    //if(this.weaponsShoot[i].x<this.baloon.x)
-    debugger
-    // alert("cool1");
-    if(this.weaponsShoot[i].x<=this.baloon.x+this.baloon.width){
-      console.log("");
+    for(var j=0;j<=this.baloon.width;j++){
+      if(this.weaponsShoot[i].x+j>this.baloon.x){
+        if(this.weaponsShoot[i].x+j<this.baloon.x+this.baloon.width){
+          // alert();
+          return true;
+        }
+      }
     }
   }
 
