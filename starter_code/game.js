@@ -103,8 +103,9 @@ Game.prototype.playerColision = function() {
 
 Game.prototype.weaponColision = function(i) {
   //COLISION VERTICAL
-  if (this.weaponsShoot[i].y < this.baloon.y) {
-    if ((this.baloon.x === (this.weaponsShoot[i].x + this.weaponsShoot[i].widthFrame - 10))) {
+  // debugger
+  if (this.weaponsShoot[i].y < this.baloon.y+Math.floor(this.baloon.width)) {
+    if ((this.baloon.x === (this.weaponsShoot[i].x + Math.floor(this.weaponsShoot[i].widthFrame) - 10))) {
       //FUNCIONA
       // debugger
       alert("COL VERTICAL Derecha");
@@ -119,15 +120,17 @@ Game.prototype.weaponColision = function(i) {
   if ((this.weaponsShoot[i].y <= (this.baloon.y + this.baloon.height)) &&
     (this.weaponsShoot[i].y >= (this.baloon.y + this.baloon.height - 6))) {
     //Calcula para cada pixel del arma x si esta entre la bola, si esta hay colisión
+    // debugger
     for (var j = 0; j <= this.weaponsShoot[i].widthFrame; j++) {
       if (this.weaponsShoot[i].x + j > this.baloon.x) {
-        if (this.weaponsShoot[i].x + j < this.baloon.x + Math.floor(this.baloon.width)) {
+        if (this.weaponsShoot[i].x + j <= this.baloon.x + Math.floor(this.baloon.width)+2) {
           // debugger
           alert("Frontal colision");
           // debugger
           return true;
         }
       }
+
     }
   }
 };
