@@ -7,7 +7,7 @@ function Baloon(canvasId, sprite) {
   this.sprite = new Image();
   this.sprite.src = sprite;
   this.sprite.isReady = false;
-  this.sprite.scale = 2.5;
+  this.sprite.scale = 2;
   this.sprite.onload = (function() {
     this.sprite.isReady = true;
     this.width = this.sprite.width * this.sprite.scale;
@@ -16,7 +16,7 @@ function Baloon(canvasId, sprite) {
   }).bind(this);
 
   this.x = 130;
-  this.y = 280;
+  this.y = 180;
   // this.speed = 5;
   this.vx = 1;
   this.vy = 2;
