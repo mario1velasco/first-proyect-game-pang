@@ -16,9 +16,9 @@ function Game(canvasId, width, height) {
   this.player = new Player(this.canvas, "./images/pang.png", 370, this.height);
   document.onkeydown = this.drawContinue.bind(this);
   this.weaponsShoot = [];
-  this.arrayBaloons= [];
-  this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png",50,390,1));
-  this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png",450,400,1));
+  this.arrayBaloons = [];
+  this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png", 50, 190, 0.5, 1,2));
+  // this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png",450,400,1,1));
   // this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png",410,50,0.5));
   // this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png",350,50,2));
   //this.points=0;
@@ -31,7 +31,7 @@ Game.prototype.clear = function() {
 Game.prototype.draw = function() {
   if (this.beginCount) {
     this.bg.draw();
-    this.arrayBaloons.forEach(function(element){
+    this.arrayBaloons.forEach(function(element) {
       element.draw();
     });
     // this.baloon.draw();
@@ -46,8 +46,12 @@ Game.prototype.draw = function() {
     }
     for (var i = 0; i < this.weaponsShoot.length; i++) {
       // debugger
-      this.arrayBaloons.forEach((function(element, index, array){
-        this.weaponColision(element, i, index, array);
+      this.arrayBaloons.forEach((function(element, index, array) {
+        // this.weaponColision(element, i, index, array);
+        if (this.weaponColision(element, i, index, array)) {
+          //Split ball in two or delete it
+          this.dividedBaloon(element, index, array);
+        }
       }).bind(this));
 
 
@@ -58,11 +62,11 @@ Game.prototype.draw = function() {
       }
     }
     this.player.draw();
-    this.arrayBaloons.forEach(function(element){
+    this.arrayBaloons.forEach(function(element) {
       element.updateBaloon();
     });
     // this.baloon.updateBaloon();
-    this.arrayBaloons.forEach((function(element, index, array){
+    this.arrayBaloons.forEach((function(element, index, array) {
       this.playerColision(element, index, array);
     }).bind(this));
     // this.playerColision();
@@ -70,7 +74,7 @@ Game.prototype.draw = function() {
     this.clear();
     this.bg.draw();
     this.player.draw();
-    this.arrayBaloons.forEach(function(element){
+    this.arrayBaloons.forEach(function(element) {
       element.draw();
     });
     // this.baloon.draw();
@@ -79,18 +83,31 @@ Game.prototype.draw = function() {
   this.requestId = window.requestAnimationFrame(this.draw.bind(this));
 };
 
+Game.prototype.dividedBaloon = function(element, index, array) {
+  // debugger
+  if (element.scale === 0.5)
+    array.splice(index, 1);
+  else {
+    this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png",
+      (element.x + element.radius+10), (element.y - 20), (element.sprite.scale - 0.5), 1, -2));
+    this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png",
+      (element.x + element.radius-10), (element.y - 20), (element.sprite.scale - 0.5), -1, -2));
+    array.splice(index, 1);
+  }
+};
+
 Game.prototype.weaponColision = function(element, i, index, array) {
-  var colision=false;
+  var colision = false;
   //COLISION VERTICAL
   // debugger
-  if (this.weaponsShoot[i].y < element.y+Math.floor(element.width)) {
+  if (this.weaponsShoot[i].y < element.y + Math.floor(element.width)) {
     if ((element.x === (this.weaponsShoot[i].x + Math.floor(this.weaponsShoot[i].widthFrame) - 10))) {
       // alert("COL VERTICAL Derecha");
-      colision=true;
+      colision = true;
     }
     if ((this.weaponsShoot[i].x === (element.x + Math.floor(element.width)))) {
       // alert("COL VERTICAL Izquierda");
-      colision=true;
+      colision = true;
     }
   }
   //COLISON FRONTAL
@@ -101,18 +118,15 @@ Game.prototype.weaponColision = function(element, i, index, array) {
     // debugger
     for (var j = 0; j <= this.weaponsShoot[i].widthFrame; j++) {
       if (this.weaponsShoot[i].x + j > element.x) {
-        if (this.weaponsShoot[i].x + j <= element.x + Math.floor(element.width)+2) {
+        if (this.weaponsShoot[i].x + j <= element.x + Math.floor(element.width) + 2) {
           // alert("Frontal colision");
-          colision=true;
+          colision = true;
           break;
         }
       }
     }
   }
-  if(colision){
-    // debugger
-    array.splice(index, 1);
-  }
+  return colision;
 };
 
 Game.prototype.playerColision = function(element, index, array) {
@@ -122,12 +136,12 @@ Game.prototype.playerColision = function(element, index, array) {
     if (((element.x + Math.floor(element.width)) === this.player.x + 3)) {
       isColision = true;
       // debugger
-      alert("COL VERTICAL Izquierda");
+      // alert("COL VERTICAL Izquierda");
     }
     if ((element.x === (this.player.x + Math.floor(this.player.widthFrame) - 10))) {
       isColision = true;
       // debugger
-      alert("COL VERTICAL Derecha");
+      // alert("COL VERTICAL Derecha");
     }
   }
   //COLISON FRONTAL

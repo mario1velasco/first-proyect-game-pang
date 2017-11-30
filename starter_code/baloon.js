@@ -1,6 +1,6 @@
 var gravity = 0.1;
 
-function Baloon(canvasId, sprite, x, y ,scale) {
+function Baloon(canvasId, sprite, x, y ,scale, vx, vy) {
   // debugger
   this.canvas = canvasId;
   this.ctx = this.canvas.getContext('2d');
@@ -18,8 +18,8 @@ function Baloon(canvasId, sprite, x, y ,scale) {
   this.x = x;
   this.y = y;
   // this.speed = 5;
-  this.vx = 1;
-  this.vy = 2;
+  this.vx = vx;
+  this.vy = vy;
   this.noMoreGravity=false;
 }
 
