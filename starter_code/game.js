@@ -11,7 +11,6 @@ function Game(canvasId, width, height) {
   this.beginCount = true;
   this.countdown = 180;
   // debugger
-  document.onkeydown = this.drawContinue.bind(this);
 
 
   this.bg = new Background(this.canvas, "./images/bg3units.png", this.width, this.height);
@@ -26,20 +25,31 @@ function Game(canvasId, width, height) {
   // this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png",410,50,0.5));
   // this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png",350,50,2));
   this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 490, 30, 7));
-  this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 530, 30, 7));
-  this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 570, 30, 7));
+  // this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 530, 30, 7));
+  // this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 570, 30, 7));
+
+
+  document.onkeydown = this.drawContinue.bind(this);
 }
 
 Game.prototype.clear = function() {
   this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 };
 
-
+Game.prototype.drawContinue = function() {
+  debugger
+  if (this.player.dead) {
+    if (event.keyCode == Y_KEY) {
+      var game = new Game("canvas-fb", 640, 480);
+      game.draw();
+    }
+  } else {
+    this.player.onKeyDown();
+  }
+};
 
 Game.prototype.draw = function() {
   if (this.beginCount) {
-    // debugger
-    // this.incializer(this.inicial);
     this.bg.draw();
     this.paintBaloons(this.beginCount);
     this.player.draw();
@@ -61,13 +71,7 @@ Game.prototype.draw = function() {
           this.dividedBaloon(element, index, array);
         }
       }).bind(this));
-
-
-      if (this.weaponsShoot[i].y === 0) {
-        this.weaponsShoot.splice(i, 1);
-      } else {
-        this.weaponsShoot[i].draw();
-      }
+      this.paintShoot(i);
     }
     // debugger
     this.player.draw();
@@ -83,8 +87,16 @@ Game.prototype.draw = function() {
   this.requestId = window.requestAnimationFrame(this.draw.bind(this));
 };
 
+Game.prototype.paintShoot = function (i) {
+  if (this.weaponsShoot[i].y === 0) {
+    this.weaponsShoot.splice(i, 1);
+  } else {
+    this.weaponsShoot[i].draw();
+  }
+};
+
 Game.prototype.playerDie = function() {
-  if (this.arrayLifes.length > 0 && (this.beginCount === false)) {
+  if (this.arrayLifes.length > 1 && (this.beginCount === false)) {
     this.arrayLifes.pop();
     this.beginCount = true;
     this.player.dead = false;
@@ -187,31 +199,9 @@ Game.prototype.playerColision = function(element, index, array) {
     element.updateBaloon();
     element.updateBaloon();
     element.updateBaloon();
-    // this.baloon.updateBaloon();
-    // this.baloon.updateBaloon();
-    // this.baloon.updateBaloon();
     this.player.draw();
-    // window.cancelAnimationFrame(requestId);
-    // requestId = undefined;
   }
 };
-
-// Game.prototype.incializer = function(bool) {
-//   if (bool) {
-//     this.arrayBaloons = [];
-//     this.arrayLifes = [];
-//     this.weaponsShoot = [];
-//     this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png", 50, 190, 0.5, 1, 2));
-//     // this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png",450,400,1,1));
-//     // this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png",410,50,0.5));
-//     // this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png",350,50,2));
-//     this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 490, 30, 7));
-//     this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 530, 30, 7));
-//     this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 570, 30, 7));
-//     //this.points=0;
-//     this.inicial = false;
-//   }
-// };
 
 Game.prototype.paintLifes = function() {
   this.arrayLifes.forEach(function(element) {
@@ -233,6 +223,7 @@ Game.prototype.paintBaloons = function(beginCount) {
 };
 
 Game.prototype.drawContinue = function() {
+  debugger
   if (this.player.dead) {
     if (event.keyCode == Y_KEY) {
       var game = new Game("canvas-fb", 640, 480);
