@@ -100,3 +100,9 @@ Player.prototype.die = function() {
     this.sprite.frameIndex = 10;
   }
 };
+
+Player.prototype.win = function() {
+  
+    this.sprite.frameIndex = 9;
+
+};

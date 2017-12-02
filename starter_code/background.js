@@ -14,8 +14,8 @@ function Background(canvasId, sprite, width, height) {
     this.widthFrame = Math.floor(this.width / this.sprite.frames);
   }).bind(this);
   // debugger
-  this.sprite.frames = 3;
-  this.sprite.frameIndex = Math.floor(Math.random()*3);
+  this.sprite.frames = 8;
+  this.sprite.frameIndex = Math.floor(Math.random()*8);
   this.x = 0;
 }
 

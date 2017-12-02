@@ -37,3 +37,19 @@ Options.prototype.draw = function() {
       this.height); // destination frame heigth
   }
 };
+Options.prototype.drawBox = function(boxNumber) {
+  if (this.isReady) {
+    this.ctx.drawImage(
+      this.sprite, // Image
+      this.sprite.frameIndex * Math.floor(this.sprite.width / this.sprite.frames), // source x
+      0, // source y: allways 0 for this image
+      Math.floor(this.sprite.width / this.sprite.frames), // frame width
+      this.sprite.height, // frame heigth
+      this.x, // destination x
+      this.y, // destination y
+      this.widthFrame, // destination frame width
+      this.height); // destination frame heigth
+  }
+  if(this.y<450)
+  this.y += 1;
+};

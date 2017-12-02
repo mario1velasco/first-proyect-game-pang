@@ -1,4 +1,4 @@
-function Over(canvasId, sprite) {
+function Over(canvasId, sprite, win) {
   this.canvas = canvasId;
   this.ctx = this.canvas.getContext('2d');
   this.sprite = new Image();
@@ -14,6 +14,7 @@ function Over(canvasId, sprite) {
   this.y = 0;
   this.intervl = "";
   this.countdown = 870;
+  this.win=win;
 }
 
 Over.prototype.isReady = function() {
@@ -29,9 +30,19 @@ Over.prototype.draw = function() {
     this.width,
     this.height
   );
-  this.drawContinue(170, 330);
-  // this.drawContinue(170,30);
-  if (this.width < 300)
+  // debugger
+  if(this.win){
+    this.drawEnd(170,330);
+    this.growing(200);
+  }else{
+    this.drawContinue(170, 330);
+    this.growing(300);
+  }
+
+};
+
+Over.prototype.growing = function (width) {
+  if (this.width < width)
     this.sprite.scale += 0.002;
   this.width = this.sprite.width * this.sprite.scale;
   this.height = this.sprite.height * this.sprite.scale;
@@ -50,4 +61,13 @@ Over.prototype.drawContinue = function(x, y) {
   }
   if (Math.floor(this.countdown / 80) > 0)
     this.countdown--;
+};
+Over.prototype.drawEnd = function(x, y) {
+    this.ctx.font = 'bold 70px serif';
+    this.ctx.fillStyle = 'black';
+    this.ctx.fillText('YOU WIN !!', x, y);
+    // this.ctx.fillText('Press Y.');
+    this.ctx.font = 'bold 30px serif';
+    this.ctx.fillStyle = 'black';
+    this.ctx.fillText('Press Start Game button for a new game.', x-130, y + 60);
 };
