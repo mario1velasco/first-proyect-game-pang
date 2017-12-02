@@ -29,7 +29,7 @@ Over.prototype.draw = function() {
     this.width,
     this.height
   );
-  this.drawContinue(170,330);
+  this.drawContinue(170, 330);
   // this.drawContinue(170,30);
   if (this.width < 300)
     this.sprite.scale += 0.002;
@@ -37,16 +37,16 @@ Over.prototype.draw = function() {
   this.height = this.sprite.height * this.sprite.scale;
 };
 
-Over.prototype.drawContinue = function(x,y) {
+Over.prototype.drawContinue = function(x, y) {
   //1100 son 13s lo justo para poner un sonido
   if (this.countdown <= 870) {
-    this.ctx.font = '50px serif';
+    this.ctx.font = 'bold 70px serif';
     this.ctx.fillStyle = 'black';
     this.ctx.fillText('Continue? ' + Math.floor(this.countdown / 80), x, y);
     // this.ctx.fillText('Press Y.');
-    this.ctx.font = '50px serif';
+    this.ctx.font = 'bold 70px serif';
     this.ctx.fillStyle = 'black';
-    this.ctx.fillText('Press Y ', x, y+50);
+    this.ctx.fillText('Press Y ', x + 70, y + 60);
   }
   if (Math.floor(this.countdown / 80) > 0)
     this.countdown--;

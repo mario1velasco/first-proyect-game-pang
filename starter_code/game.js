@@ -25,7 +25,7 @@ function Game(canvasId, width, height) {
   // this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png",410,50,0.5));
   // this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png",350,50,2));
   this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 490, 30, 7));
-  // this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 530, 30, 7));
+  this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 530, 30, 7));
   // this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 570, 30, 7));
 
 
@@ -54,7 +54,7 @@ Game.prototype.draw = function() {
     this.paintBaloons(this.beginCount);
     this.player.draw();
     this.paintLifes();
-    this.drawCountdownBeginning(150, 200);
+    this.drawCountdownBeginning(50, 150);
   } else if (!this.player.dead) {
     this.clear();
     this.bg.draw();
@@ -87,33 +87,6 @@ Game.prototype.draw = function() {
   this.requestId = window.requestAnimationFrame(this.draw.bind(this));
 };
 
-Game.prototype.paintShoot = function (i) {
-  if (this.weaponsShoot[i].y === 0) {
-    this.weaponsShoot.splice(i, 1);
-  } else {
-    this.weaponsShoot[i].draw();
-  }
-};
-
-Game.prototype.playerDie = function() {
-  if (this.arrayLifes.length > 1 && (this.beginCount === false)) {
-    this.arrayLifes.pop();
-    this.beginCount = true;
-    this.player.dead = false;
-    this.countdown = 280;
-    this.player = new Player(this.canvas, "./images/pang.png", 370, this.height);
-    this.arrayBaloons = [];
-    this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png", 50, 190, 0.5, 1, 2));
-  } else {
-    this.clear();
-    this.bg.draw();
-    this.player.draw();
-    this.paintLifes();
-    this.paintBaloons(true);
-    this.over.draw();
-  }
-};
-
 Game.prototype.dividedBaloon = function(element, index, array) {
   // debugger
   if (element.scale === 0.5)
@@ -124,6 +97,35 @@ Game.prototype.dividedBaloon = function(element, index, array) {
     this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png",
       (element.x + element.radius - 10), (element.y - 20), (element.sprite.scale - 0.5), -1, -2));
     array.splice(index, 1);
+  }
+};
+
+Game.prototype.paintShoot = function (i) {
+  if (this.weaponsShoot[i].y === 0) {
+    this.weaponsShoot.splice(i, 1);
+  } else {
+    this.weaponsShoot[i].draw();
+  }
+};
+
+Game.prototype.playerDie = function() {
+  if (this.arrayLifes.length > 1 && (this.beginCount === false)) {
+    // debugger
+    this.arrayLifes.pop();
+    this.beginCount = true;
+    this.player.dead = false;
+    this.countdown = 280;
+    this.player.x=270;
+    // this.player = new Player(this.canvas, "./images/pang.png", 370, this.height);
+    this.arrayBaloons = [];
+    this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png", 50, 190, 0.5, 1, 2));
+  } else {
+    this.clear();
+    this.bg.draw();
+    this.player.draw();
+    this.paintLifes();
+    this.paintBaloons(true);
+    this.over.draw();
   }
 };
 
@@ -223,7 +225,7 @@ Game.prototype.paintBaloons = function(beginCount) {
 };
 
 Game.prototype.drawContinue = function() {
-  debugger
+  // debugger
   if (this.player.dead) {
     if (event.keyCode == Y_KEY) {
       var game = new Game("canvas-fb", 640, 480);
@@ -237,7 +239,7 @@ Game.prototype.drawContinue = function() {
 Game.prototype.drawCountdownBeginning = function(x, y) {
   //1100 son 13s lo justo para poner un sonido
   if (this.countdown <= 870) {
-    this.ctx.font = '50px serif';
+    this.ctx.font = 'bold 70px serif';
     this.ctx.fillStyle = 'black';
     this.ctx.fillText('Are you ready? ' + Math.floor(this.countdown / 80), x, y);
   }
