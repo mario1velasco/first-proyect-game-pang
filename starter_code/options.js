@@ -32,7 +32,7 @@ Options.prototype.draw = function() {
       Math.floor(this.sprite.width / this.sprite.frames), // frame width
       this.sprite.height, // frame heigth
       this.x, // destination x
-      0, // destination y
+      this.y, // destination y
       this.widthFrame, // destination frame width
       this.height); // destination frame heigth
   }

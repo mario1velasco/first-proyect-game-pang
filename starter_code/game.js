@@ -8,36 +8,42 @@ function Game(canvasId, width, height) {
   this.canvas = document.getElementById(canvasId);
   this.ctx = this.canvas.getContext('2d');
   this.requestId = undefined;
-  this.beginCount = false;
-  this.countdown = 320;
+  this.beginCount = true;
+  this.countdown = 180;
   // debugger
+  document.onkeydown = this.drawContinue.bind(this);
+
+
   this.bg = new Background(this.canvas, "./images/bg3units.png", this.width, this.height);
   this.over = new Over(this.canvas, "./images/game-over.png");
-  this.player = new Player(this.canvas, "./images/pang.png", 370, this.height);
-  document.onkeydown = this.drawContinue.bind(this);
+  //this.points=0;
+  this.arrayLifes = [];
   this.weaponsShoot = [];
+  this.player = new Player(this.canvas, "./images/pang.png", 370, this.height);
   this.arrayBaloons = [];
-  this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png", 50, 190, 0.5, 1,2));
+  this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png", 50, 190, 0.5, 1, 2));
   // this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png",450,400,1,1));
   // this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png",410,50,0.5));
   // this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png",350,50,2));
-  //this.points=0;
-  // debugger
-  this.life = new Options(this.canvas, "./images/options2.png", 20,20,10);
+  this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 490, 30, 7));
+  this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 530, 30, 7));
+  this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 570, 30, 7));
 }
 
 Game.prototype.clear = function() {
   this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 };
 
+
+
 Game.prototype.draw = function() {
   if (this.beginCount) {
+    // debugger
+    // this.incializer(this.inicial);
     this.bg.draw();
-    this.arrayBaloons.forEach(function(element) {
-      element.draw();
-    });
-    // this.baloon.draw();
+    this.paintBaloons(this.beginCount);
     this.player.draw();
+    this.paintLifes();
     this.drawCountdownBeginning(150, 200);
   } else if (!this.player.dead) {
     this.clear();
@@ -64,27 +70,36 @@ Game.prototype.draw = function() {
       }
     }
     // debugger
-    this.life.draw();
     this.player.draw();
-    this.arrayBaloons.forEach(function(element) {
-      element.updateBaloon();
-    });
-    // this.baloon.updateBaloon();
+    this.paintLifes();
+    this.paintBaloons(false);
     this.arrayBaloons.forEach((function(element, index, array) {
       this.playerColision(element, index, array);
     }).bind(this));
-    // this.playerColision();
+  } else {
+    // debugger
+    this.playerDie();
+  }
+  this.requestId = window.requestAnimationFrame(this.draw.bind(this));
+};
+
+Game.prototype.playerDie = function() {
+  if (this.arrayLifes.length > 0 && (this.beginCount === false)) {
+    this.arrayLifes.pop();
+    this.beginCount = true;
+    this.player.dead = false;
+    this.countdown = 280;
+    this.player = new Player(this.canvas, "./images/pang.png", 370, this.height);
+    this.arrayBaloons = [];
+    this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png", 50, 190, 0.5, 1, 2));
   } else {
     this.clear();
     this.bg.draw();
     this.player.draw();
-    this.arrayBaloons.forEach(function(element) {
-      element.draw();
-    });
-    // this.baloon.draw();
+    this.paintLifes();
+    this.paintBaloons(true);
     this.over.draw();
   }
-  this.requestId = window.requestAnimationFrame(this.draw.bind(this));
 };
 
 Game.prototype.dividedBaloon = function(element, index, array) {
@@ -93,9 +108,9 @@ Game.prototype.dividedBaloon = function(element, index, array) {
     array.splice(index, 1);
   else {
     this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png",
-      (element.x + element.radius+10), (element.y - 20), (element.sprite.scale - 0.5), 1, -2));
+      (element.x + element.radius + 10), (element.y - 20), (element.sprite.scale - 0.5), 1, -2));
     this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png",
-      (element.x + element.radius-10), (element.y - 20), (element.sprite.scale - 0.5), -1, -2));
+      (element.x + element.radius - 10), (element.y - 20), (element.sprite.scale - 0.5), -1, -2));
     array.splice(index, 1);
   }
 };
@@ -181,6 +196,41 @@ Game.prototype.playerColision = function(element, index, array) {
   }
 };
 
+// Game.prototype.incializer = function(bool) {
+//   if (bool) {
+//     this.arrayBaloons = [];
+//     this.arrayLifes = [];
+//     this.weaponsShoot = [];
+//     this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png", 50, 190, 0.5, 1, 2));
+//     // this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png",450,400,1,1));
+//     // this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png",410,50,0.5));
+//     // this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png",350,50,2));
+//     this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 490, 30, 7));
+//     this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 530, 30, 7));
+//     this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 570, 30, 7));
+//     //this.points=0;
+//     this.inicial = false;
+//   }
+// };
+
+Game.prototype.paintLifes = function() {
+  this.arrayLifes.forEach(function(element) {
+    element.draw();
+  });
+};
+
+Game.prototype.paintBaloons = function(beginCount) {
+  // debugger
+  if (beginCount) {
+    this.arrayBaloons.forEach(function(element) {
+      element.draw();
+    });
+  } else {
+    this.arrayBaloons.forEach(function(element) {
+      element.updateBaloon();
+    });
+  }
+};
 
 Game.prototype.drawContinue = function() {
   if (this.player.dead) {
