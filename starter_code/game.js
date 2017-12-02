@@ -22,6 +22,8 @@ function Game(canvasId, width, height) {
   // this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png",410,50,0.5));
   // this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png",350,50,2));
   //this.points=0;
+  // debugger
+  this.life = new Options(this.canvas, "./images/options2.png", 20,20,10);
 }
 
 Game.prototype.clear = function() {
@@ -61,6 +63,8 @@ Game.prototype.draw = function() {
         this.weaponsShoot[i].draw();
       }
     }
+    // debugger
+    this.life.draw();
     this.player.draw();
     this.arrayBaloons.forEach(function(element) {
       element.updateBaloon();
