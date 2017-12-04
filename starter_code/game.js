@@ -11,6 +11,7 @@ function Game(canvasId, width, height) {
   this.beginCount = true;
   this.countdown = 180;
   this.maxShoots = 1;
+  this.weaponSelect = 1;
   // debugger
 
 
@@ -20,7 +21,7 @@ function Game(canvasId, width, height) {
   //this.points=0;
   this.arrayLifes = [];
   this.weaponsShoot = [];
-  this.arrayOptionsBox=[];
+  this.arrayOptionsBox = [];
   this.player = new Player(this.canvas, "./images/pang.png", 370, this.height);
   this.arrayBaloons = [];
   this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png", 50, 190, 1.5, 1, 2));
@@ -65,8 +66,10 @@ Game.prototype.draw = function() {
     this.bg.draw();
     if (this.player.shoot) {
       this.player.shoot = false;
-      if (this.maxShoots !== this.weaponsShoot.length)
-        this.weaponsShoot.push(new Weapon(this.canvas, "./images/weapons2.png", this.player.x, this.player.y));
+      if (this.maxShoots !== this.weaponsShoot.length) {
+        this.weaponsShoot.push(new Weapon(this.canvas, "./images/weapons2.png",
+          this.player.x, this.player.y, this.weaponSelect));
+      }
     }
     var impact = false;
     for (var i = 0; i < this.weaponsShoot.length; i++) {
@@ -79,7 +82,7 @@ Game.prototype.draw = function() {
           impact = true;
         }
       }).bind(this));
-      this.paintShoot(i, impact);
+      this.paintShoot(i, impact, this.weaponSelect);
     }
     // debugger
     this.player.draw();
@@ -87,12 +90,55 @@ Game.prototype.draw = function() {
     this.paintBaloons(false);
     this.paintOptionBoxs();
     this.arrayBaloons.forEach((function(element, index, array) {
-      this.playerColision(element, index, array);
+      if (this.playerColision(element, index, array)) {
+        this.player.die();
+        element.updateBaloon();
+        element.updateBaloon();
+        element.updateBaloon();
+        this.player.draw();
+      }
+    }).bind(this));
+    this.arrayOptionsBox.forEach((function(element, index, array) {
+      if (this.playerColision(element, index, array)) {
+        this.pickAnOptionBox(element, index, array);
+      }
     }).bind(this));
   } else {
     this.playerDie();
   }
   this.requestId = window.requestAnimationFrame(this.draw.bind(this));
+};
+
+Game.prototype.pickAnOptionBox = function(element, index, array) {
+  switch (element.sprite.frameIndex) {
+    case 0:
+      this.weaponSelect = 1;
+      this.maxShoots = 2;
+      array.splice(index, 1);
+      break;
+    case 1:
+      //Submachinegun
+      break;
+    case 2:
+      this.weaponSelect = 0;
+      this.maxShoots = 1;
+      array.splice(index, 1);
+      break;
+    case 6:
+
+      break;
+    case 8:
+
+      break;
+    case 9:
+
+      break;
+    case 10:
+
+      break;
+    default:
+
+  }
 };
 
 Game.prototype.paintWin = function() {
@@ -137,13 +183,16 @@ Game.prototype.dividedBaloon = function(element, index, array) {
     array.splice(index, 1);
     //CREATE AN OPTION BOX
     // debugger
-    this.arrayOptionsBox.push(new Options(this.canvas, "./images/options2.png", element.x, element.y, 7));
+    this.arrayOptionsBox.push(new Options(this.canvas, "./images/options2.png", element.x, element.y, 2));
   }
 };
 
 Game.prototype.paintOptionBoxs = function() {
-  this.arrayOptionsBox.forEach(function(element) {
+  this.arrayOptionsBox.forEach(function(element, index, array) {
     element.drawBox();
+    if (element.y >= 450) {
+      array.splice(index, 1);
+    }
   });
 };
 
@@ -213,22 +262,19 @@ Game.prototype.playerColision = function(element, index, array) {
       }
     }
   }
-  if (isColision) {
-    // debugger
-    this.player.die();
-    element.updateBaloon();
-    element.updateBaloon();
-    element.updateBaloon();
-    this.player.draw();
-  }
+  return isColision;
 };
 
-Game.prototype.paintShoot = function(i, impact) {
-  if (this.weaponsShoot[i].y === 0 || impact === true) {
-    // debugger
-    this.weaponsShoot.splice(i, 1);
+Game.prototype.paintShoot = function(i, impact, weaponSelect) {
+  if (weaponSelect === 0 && this.weaponsShoot[i].y<3) {
+    this.weaponsShoot[i].y -= 3;
   } else {
-    this.weaponsShoot[i].draw();
+    if (this.weaponsShoot[i].y === 0 || impact === true) {
+      // debugger
+      this.weaponsShoot.splice(i, 1);
+    } else {
+      this.weaponsShoot[i].draw();
+    }
   }
 };
 

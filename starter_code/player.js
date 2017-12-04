@@ -101,8 +101,7 @@ Player.prototype.die = function() {
   }
 };
 
-Player.prototype.win = function() {
-  
+Player.prototype.win = function() {  
     this.sprite.frameIndex = 9;
 
 };

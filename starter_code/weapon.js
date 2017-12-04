@@ -1,4 +1,4 @@
-function Weapon(canvasId, sprite, x, y) {
+function Weapon(canvasId, sprite, x, y, weaponSelect) {
   this.canvas = canvasId;
   this.ctx = this.canvas.getContext('2d');
   this.sprite = new Image();
@@ -12,7 +12,7 @@ function Weapon(canvasId, sprite, x, y) {
     this.widthFrame = Math.floor(this.width / this.sprite.frames);
   }).bind(this);
   this.sprite.frames = 20;
-  this.sprite.frameIndex = 1;
+  this.sprite.frameIndex = weaponSelect;
   this.x = x;
   this.y = y;
   // document.onkeydown = this.onKeyDown.bind(this);

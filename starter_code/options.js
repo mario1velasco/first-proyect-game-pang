@@ -50,6 +50,6 @@ Options.prototype.drawBox = function(boxNumber) {
       this.widthFrame, // destination frame width
       this.height); // destination frame heigth
   }
-  if(this.y<450)
+  if(this.y<=450)
   this.y += 1;
 };
