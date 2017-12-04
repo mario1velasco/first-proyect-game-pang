@@ -73,9 +73,7 @@ Game.prototype.draw = function() {
     }
     var impact = false;
     for (var i = 0; i < this.weaponsShoot.length; i++) {
-      // debugger
       this.arrayBaloons.forEach((function(element, index, array) {
-        // this.weaponColision(element, i, index, array);
         if (this.weaponColision(element, i, index, array)) {
           //Split ball in two or delete it
           this.dividedBaloon(element, index, array);
@@ -267,7 +265,11 @@ Game.prototype.playerColision = function(element, index, array) {
 
 Game.prototype.paintShoot = function(i, impact, weaponSelect) {
   if (weaponSelect === 0 && this.weaponsShoot[i].y<3) {
-    this.weaponsShoot[i].y -= 3;
+    this.weaponsShoot[i].y += 3;
+    this.weaponsShoot[i].draw();
+    if(impact === true){
+      this.weaponsShoot.splice(i, 1);      
+    }
   } else {
     if (this.weaponsShoot[i].y === 0 || impact === true) {
       // debugger
