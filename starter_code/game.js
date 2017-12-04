@@ -115,7 +115,9 @@ Game.prototype.pickAnOptionBox = function(element, index, array) {
       array.splice(index, 1);
       break;
     case 1:
-      //Submachinegun
+      this.weaponSelect = 3;
+      this.maxShoots = 200;
+      array.splice(index, 1);
       break;
     case 2:
       this.weaponSelect = 0;
@@ -181,8 +183,8 @@ Game.prototype.dividedBaloon = function(element, index, array) {
     array.splice(index, 1);
     //CREATE AN OPTION BOX
     // debugger
-    this.arrayOptionsBox.push(new Options(this.canvas, "./images/options2.png", element.x, element.y,
-    Math.floor(Math.random()*3)));
+    this.arrayOptionsBox.push(new Options(this.canvas, "./images/options2.png", element.x, element.y,1));
+      // Math.floor(Math.random() * 3)));
   }
 };
 
@@ -199,15 +201,17 @@ Game.prototype.weaponColision = function(element, i, index, array) {
   var colision = false;
   //COLISION VERTICAL
   // debugger
-  if (this.weaponsShoot[i].y < element.y + Math.floor(element.width)) {
-    if ((Math.floor(element.x) === (this.weaponsShoot[i].x + Math.floor(this.weaponsShoot[i].widthFrame) - 10))) {
-      // alert("COL VERTICAL Derecha");
-      colision = true;
-    }
-    if ((this.weaponsShoot[i].x === (Math.floor(element.x) + Math.floor(element.width)))) {
-      // alert("COL VERTICAL Izquierda");
-      colision = true;
-    }
+  if(this.weaponSelect!==3){
+    if (this.weaponsShoot[i].y < element.y + Math.floor(element.width)) {
+      if ((Math.floor(element.x) === (this.weaponsShoot[i].x + Math.floor(this.weaponsShoot[i].widthFrame) - 10))) {
+        // alert("COL VERTICAL Derecha");
+        colision = true;
+      }
+      if ((this.weaponsShoot[i].x === (Math.floor(element.x) + Math.floor(element.width)))) {
+        // alert("COL VERTICAL Izquierda");
+        colision = true;
+      }
+    }    
   }
   //COLISON FRONTAL
   //primero comprueba que el y de la bola y player coincidan +-6
@@ -265,14 +269,15 @@ Game.prototype.playerColision = function(element, index, array) {
 };
 
 Game.prototype.paintShoot = function(i, impact, weaponSelect) {
-  if (weaponSelect === 0 && this.weaponsShoot[i].y<3) {
+  // debugger
+  if (weaponSelect === 0 && this.weaponsShoot[i].y < 3) {
     this.weaponsShoot[i].y += 3;
     this.weaponsShoot[i].draw();
-    if(impact === true){
+    if (impact === true) {
       this.weaponsShoot.splice(i, 1);
     }
   } else {
-    if (this.weaponsShoot[i].y === 0 || impact === true) {
+    if (this.weaponsShoot[i].y <= 0 || impact === true) {
       // debugger
       this.weaponsShoot.splice(i, 1);
     } else {

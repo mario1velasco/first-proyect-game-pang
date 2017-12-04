@@ -48,13 +48,15 @@ Weapon.prototype.paintGun = function () {
 };
 
 Weapon.prototype.paintSubMachineGun = function () {
+  // debugger
   if (this.isReady) {
-    context.beginPath();
-      context.arc(this.x, this.y, 10, 0, 2 * Math.PI, false);
-      context.fillStyle = 'green';
-      context.fill();
-      context.lineWidth = 5;
-      context.strokeStyle = '#003300';
-      context.stroke();
+    this.ctx.beginPath();
+      this.ctx.arc(this.x+5, this.y, 4, 0, 2 * Math.PI, false);
+      this.ctx.fillStyle = 'rgb(180, 189, 181)';
+      this.ctx.fill();
+      this.ctx.lineWidth = 2;
+      this.ctx.strokeStyle = '#003300';
+      this.ctx.stroke();
   }
+  this.y -= 6;
 };
