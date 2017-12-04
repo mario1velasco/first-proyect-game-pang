@@ -23,6 +23,15 @@ Weapon.prototype.isReady = function() {
 };
 
 Weapon.prototype.draw = function() {
+  // debugger
+  if(this.sprite.frameIndex ===3){
+    this.paintSubMachineGun();
+  }else{
+    this.paintGun();
+  }
+};
+
+Weapon.prototype.paintGun = function () {
   if (this.isReady) {
     this.ctx.drawImage(
       this.sprite, // Image
@@ -36,4 +45,16 @@ Weapon.prototype.draw = function() {
       this.height); // destination frame heigth
   }
   this.y -= 3;
+};
+
+Weapon.prototype.paintSubMachineGun = function () {
+  if (this.isReady) {
+    context.beginPath();
+      context.arc(this.x, this.y, 10, 0, 2 * Math.PI, false);
+      context.fillStyle = 'green';
+      context.fill();
+      context.lineWidth = 5;
+      context.strokeStyle = '#003300';
+      context.stroke();
+  }
 };

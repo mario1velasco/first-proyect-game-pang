@@ -181,7 +181,8 @@ Game.prototype.dividedBaloon = function(element, index, array) {
     array.splice(index, 1);
     //CREATE AN OPTION BOX
     // debugger
-    this.arrayOptionsBox.push(new Options(this.canvas, "./images/options2.png", element.x, element.y, 2));
+    this.arrayOptionsBox.push(new Options(this.canvas, "./images/options2.png", element.x, element.y,
+    Math.floor(Math.random()*3)));
   }
 };
 
@@ -268,7 +269,7 @@ Game.prototype.paintShoot = function(i, impact, weaponSelect) {
     this.weaponsShoot[i].y += 3;
     this.weaponsShoot[i].draw();
     if(impact === true){
-      this.weaponsShoot.splice(i, 1);      
+      this.weaponsShoot.splice(i, 1);
     }
   } else {
     if (this.weaponsShoot[i].y === 0 || impact === true) {
