@@ -47,6 +47,7 @@ Game.prototype.clear = function() {
 };
 
 Game.prototype.drawContinue = function() {
+  debugger
   if (this.player.dead) {
     if (event.keyCode == Y_KEY) {
       var game = new Game("canvas-fb", 640, 480);
