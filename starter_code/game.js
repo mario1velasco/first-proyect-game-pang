@@ -211,7 +211,7 @@ Game.prototype.weaponColision = function(element, i, index, array) {
         // alert("COL VERTICAL Izquierda");
         colision = true;
       }
-    }    
+    }
   }
   //COLISON FRONTAL
   //primero comprueba que el y de la bola y player coincidan +-6
