@@ -30,6 +30,22 @@ Player.prototype.isReady = function() {
   return this.sprite.isReady;
 };
 
+Player.prototype.drawDead = function() {
+  if (this.isReady) {
+    this.ctx.drawImage(
+      this.sprite, // Image
+      this.sprite.frameIndex * Math.floor(this.sprite.width / this.sprite.frames), // source x
+      0, // source y: allways 0 for this image
+      Math.floor(this.sprite.width / this.sprite.frames)-3, // frame width quito -3 porque sobre 3 px del lado derecho
+      this.sprite.height-1, // frame heigth sobra 1px de abajo
+      this.x, // destination x
+      this.y, // destination y
+      this.widthFrame, // destination frame width
+      this.height); // destination frame heigth
+    }
+    this.y--;
+  };
+
 Player.prototype.draw = function() {
   if (this.isReady) {
     this.ctx.drawImage(

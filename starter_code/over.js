@@ -14,7 +14,8 @@ function Over(canvasId, sprite, win) {
   this.y = 0;
   this.intervl = "";
   this.countdown = 870;
-  this.win=win;
+  this.win = win;
+  this.startCountdown = true;
 }
 
 Over.prototype.isReady = function() {
@@ -31,25 +32,30 @@ Over.prototype.draw = function() {
     this.height
   );
   // debugger
-  if(this.win){
-    this.drawEnd(170,330);
+  if (this.win) {
+    this.drawEnd(70, 330);
     this.growing(200);
-  }else{
+  } else {
     this.drawContinue(170, 330);
     this.growing(300);
   }
 
 };
 
-Over.prototype.growing = function (width) {
+Over.prototype.growing = function(width) {
   if (this.width < width)
     this.sprite.scale += 0.002;
   this.width = this.sprite.width * this.sprite.scale;
   this.height = this.sprite.height * this.sprite.scale;
 };
 
-Over.prototype.drawContinue = function(x, y) {
+  Over.prototype.drawContinue = function(x, y) {
   //1100 son 13s lo justo para poner un sonido
+  // debugger
+  if (this.startCountdown) {
+    this.startCountdown=false;
+    this.countdown = 870;
+  }
   if (this.countdown <= 870) {
     this.ctx.font = 'bold 70px serif';
     this.ctx.fillStyle = 'black';
@@ -61,13 +67,25 @@ Over.prototype.drawContinue = function(x, y) {
   }
   if (Math.floor(this.countdown / 80) > 0)
     this.countdown--;
+  else{
+    this.startCountdown = true;
+  }
 };
 Over.prototype.drawEnd = function(x, y) {
-    this.ctx.font = 'bold 70px serif';
+  // debugger
+  if (this.startCountdown) {
+    this.startCountdown=false;
+    this.countdown = 240;
+  }
+  if (this.countdown <= 870) {
+    this.ctx.font = 'bold 40px serif';
     this.ctx.fillStyle = 'black';
-    this.ctx.fillText('YOU WIN !!', x, y);
+    this.ctx.fillText('YOU WIN, next level in: ' + Math.floor(this.countdown / 80), x, y);
     // this.ctx.fillText('Press Y.');
-    this.ctx.font = 'bold 30px serif';
-    this.ctx.fillStyle = 'black';
-    this.ctx.fillText('Press Start Game button for a new game.', x-130, y + 60);
+  }
+  if (Math.floor(this.countdown / 80) > 0)
+    this.countdown--;
+  else{
+    this.startCountdown = true;
+  }
 };

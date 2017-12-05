@@ -21,7 +21,7 @@ function Game(canvasId, width, height) {
   // this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 570, 30, 7));
   this.over = new Over(this.canvas, "./images/game-over.png");
   this.win = new Over(this.canvas, "./images/You_win_this_time.png", true);
-  this.gameLevel=3;
+  this.gameLevel=1;
   // document.onkeydown = this.drawContinue.bind(this);
 }
 
@@ -38,12 +38,8 @@ Game.prototype.loadValues = function () {
   this.arrayBaloons = [];
   for(var i =1; i<=this.gameLevel; i++){
     var ballPositionX= Math.floor(Math.random()*560);
-    alert(ballPositionX);
     this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png", ballPositionX, 190, 1.5, 1, 2));
   }
-  // this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png",450,400,1,1));
-  // this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png",410,50,0.5));
-  // this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png",350,50,2));
   document.onkeydown = this.drawContinue.bind(this);
 };
 
@@ -163,7 +159,13 @@ Game.prototype.paintWin = function() {
   this.bg.draw();
   this.player.win();
   this.player.draw();
-  this.win.draw();
+  if(this.win.countdown>80){
+    this.win.draw();
+  }else{
+    // debugger
+    this.gameLevel++;
+    this.loadValues();
+  }
 };
 
 
@@ -179,10 +181,17 @@ Game.prototype.playerDie = function() {
     this.player.dead = true;
     this.clear();
     this.bg.draw();
-    this.player.draw();
     this.paintLifes();
     this.paintBaloons(true);
-    this.over.draw();
+    if(this.over.countdown>80){
+      this.player.draw();
+      this.over.draw();
+    }else{
+      this.player.drawDead();
+      // debugger
+      // this.gameLevel++;
+      // this.loadValues();
+    }
   }
 };
 
