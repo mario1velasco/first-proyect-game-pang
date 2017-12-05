@@ -19,8 +19,7 @@ function Game(canvasId, width, height) {
   this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 490, 30, 7));
   this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 530, 30, 7));
   // this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 570, 30, 7));
-  this.over = new Over(this.canvas, "./images/game-over.png");
-  this.win = new Over(this.canvas, "./images/You_win_this_time.png", true);
+
   this.gameLevel=1;
   // document.onkeydown = this.drawContinue.bind(this);
 }
@@ -28,9 +27,9 @@ function Game(canvasId, width, height) {
 Game.prototype.loadValues = function () {
   this.beginCountdown = true;
   this.countdown = 180;
-
   this.bg = new Background(this.canvas, "./images/bg8.png", this.width, this.height);
-
+  this.over = new Over(this.canvas, "./images/game-over.png");
+  this.win = new Over(this.canvas, "./images/You_win_this_time.png", true);
   //this.points=0;
   this.weaponsShoot = [];
   this.arrayOptionsBox = [];
