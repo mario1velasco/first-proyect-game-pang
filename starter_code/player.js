@@ -67,7 +67,8 @@ Player.prototype.shooting = function() {
   } else if (this.sprite.frameIndex >= 11 && this.sprite.frameIndex <= 19) {
     this.sprite.frameIndex = 20;
     this.shoot= true;
-  }
+  } else if(this.sprite.frameIndex === 20 || this.sprite.frameIndex === 21)
+  this.shoot= true;
 };
 
 Player.prototype.moveToRight = function() {
@@ -101,7 +102,7 @@ Player.prototype.die = function() {
   }
 };
 
-Player.prototype.win = function() {  
+Player.prototype.win = function() {
     this.sprite.frameIndex = 9;
 
 };

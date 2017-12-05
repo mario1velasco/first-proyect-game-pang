@@ -8,33 +8,44 @@ function Game(canvasId, width, height) {
   this.canvas = document.getElementById(canvasId);
   this.ctx = this.canvas.getContext('2d');
   this.requestId = undefined;
-  this.beginCount = true;
-  this.countdown = 180;
+  // this.beginCountdown = true;
+  // this.countdown = 180;
   this.maxShoots = 1;
   this.weaponSelect = 1;
   // debugger
+  this.loadFirstTime=true;
 
-
-  this.bg = new Background(this.canvas, "./images/bg8.png", this.width, this.height);
+  this.arrayLifes = [];
+  this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 490, 30, 7));
+  this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 530, 30, 7));
+  // this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 570, 30, 7));
   this.over = new Over(this.canvas, "./images/game-over.png");
   this.win = new Over(this.canvas, "./images/You_win_this_time.png", true);
+  this.gameLevel=3;
+  // document.onkeydown = this.drawContinue.bind(this);
+}
+
+Game.prototype.loadValues = function () {
+  this.beginCountdown = true;
+  this.countdown = 180;
+
+  this.bg = new Background(this.canvas, "./images/bg8.png", this.width, this.height);
+
   //this.points=0;
-  this.arrayLifes = [];
   this.weaponsShoot = [];
   this.arrayOptionsBox = [];
   this.player = new Player(this.canvas, "./images/pang.png", 370, this.height);
   this.arrayBaloons = [];
-  this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png", 50, 190, 1.5, 1, 2));
+  for(var i =1; i<=this.gameLevel; i++){
+    var ballPositionX= Math.floor(Math.random()*560);
+    alert(ballPositionX);
+    this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png", ballPositionX, 190, 1.5, 1, 2));
+  }
   // this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png",450,400,1,1));
   // this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png",410,50,0.5));
   // this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png",350,50,2));
-  this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 490, 30, 7));
-  this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 530, 30, 7));
-  // this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 570, 30, 7));
-
-
   document.onkeydown = this.drawContinue.bind(this);
-}
+};
 
 Game.prototype.clear = function() {
   this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -52,9 +63,13 @@ Game.prototype.drawContinue = function() {
 };
 
 Game.prototype.draw = function() {
-  if (this.beginCount) {
+  if(this.loadFirstTime){
+    this.loadFirstTime=false;
+    this.loadValues();
+  }
+  if (this.beginCountdown) {
     this.bg.draw();
-    this.paintBaloons(this.beginCount);
+    this.paintBaloons(this.beginCountdown);
     this.player.draw();
     this.paintLifes();
     this.drawCountdownBeginning(50, 150);
@@ -65,6 +80,7 @@ Game.prototype.draw = function() {
     this.clear();
     this.bg.draw();
     if (this.player.shoot) {
+      // debugger
       this.player.shoot = false;
       if (this.maxShoots !== this.weaponsShoot.length) {
         this.weaponsShoot.push(new Weapon(this.canvas, "./images/weapons2.png",
@@ -152,17 +168,15 @@ Game.prototype.paintWin = function() {
 
 
 Game.prototype.playerDie = function() {
-  if (this.arrayLifes.length > 1 && (this.beginCount === false)) {
+  if (this.arrayLifes.length > 1 && (this.beginCountdown === false)) {
+    this.arrayLifes.pop();
+    this.player.dead = false;
+    this.player.x = 270;
+    this.loadValues();
+  } else {
     // debugger
     this.arrayLifes.pop();
-    this.beginCount = true;
-    this.player.dead = false;
-    this.countdown = 280;
-    this.player.x = 270;
-    // this.player = new Player(this.canvas, "./images/pang.png", 370, this.height);
-    this.arrayBaloons = [];
-    this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png", 50, 190, 0.5, 1, 2));
-  } else {
+    this.player.dead = true;
     this.clear();
     this.bg.draw();
     this.player.draw();
@@ -183,8 +197,8 @@ Game.prototype.dividedBaloon = function(element, index, array) {
     array.splice(index, 1);
     //CREATE AN OPTION BOX
     // debugger
-    this.arrayOptionsBox.push(new Options(this.canvas, "./images/options2.png", element.x, element.y,1));
-      // Math.floor(Math.random() * 3)));
+    this.arrayOptionsBox.push(new Options(this.canvas, "./images/options2.png", element.x, element.y, //1));
+      Math.floor(Math.random() * 3)));
   }
 };
 
@@ -236,7 +250,7 @@ Game.prototype.playerColision = function(element, index, array) {
   var isColision = false;
   //COLISION VERTICAL
   if ((element.y + element.height) > this.player.y) {
-    if (((element.x + Math.floor(element.width)) === this.player.x + 3)) {
+    if (((element.x + Math.floor(element.widthFrame)) === this.player.x + 3)) {
       isColision = true;
       // debugger
       // alert("COL VERTICAL Izquierda");
@@ -256,7 +270,7 @@ Game.prototype.playerColision = function(element, index, array) {
       //Lado derecho
       if (this.player.x + j > element.x) {
         //Lado izquierdo
-        if (this.player.x + j + 3 < element.x + Math.floor(element.width)) {
+        if (this.player.x + j + 3 < element.x + Math.floor(element.widthFrame)) {
           // debugger
           isColision = true;
           break;
@@ -292,9 +306,9 @@ Game.prototype.paintLifes = function() {
   });
 };
 
-Game.prototype.paintBaloons = function(beginCount) {
+Game.prototype.paintBaloons = function(beginCountdown) {
   // debugger
-  if (beginCount) {
+  if (beginCountdown) {
     this.arrayBaloons.forEach(function(element) {
       element.draw();
     });
@@ -327,6 +341,6 @@ Game.prototype.drawCountdownBeginning = function(x, y) {
   if (Math.floor(this.countdown / 80) > 0) {
     this.countdown--;
   } else {
-    this.beginCount = false;
+    this.beginCountdown = false;
   }
 };
