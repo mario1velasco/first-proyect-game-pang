@@ -231,10 +231,10 @@ Game.prototype.playerDie = function() {
   }
 };
 
-Game.prototype.dividedBaloon = function(element, index, array, isDinamite) {
-  if (element.sprite.scale === 0.5)
-    if(!isDinamite)
+Game.prototype.dividedBaloon = function(element, index, array) {
+  if (element.sprite.scale === 0.5){
     array.splice(index, 1);
+  }
   else {
     this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png",
       (element.x + element.radius + 10), (element.y - 20), (element.sprite.scale - 0.5), 1, -2));
@@ -243,8 +243,10 @@ Game.prototype.dividedBaloon = function(element, index, array, isDinamite) {
     array.splice(index, 1);
     //CREATE AN OPTION BOX
     // debugger
-    this.arrayOptionsBox.push(new Options(this.canvas, "./images/options2.png", element.x, element.y, //1));
-      Math.floor(Math.random() * 7)));
+    if(Math.floor(Math.random()*3)===1){
+      this.arrayOptionsBox.push(new Options(this.canvas, "./images/options2.png", element.x, element.y, //1));
+      Math.floor(Math.random() * 8)));
+    }
   }
 };
 
@@ -359,7 +361,7 @@ Game.prototype.paintBaloons = function(beginCountdown, option) {
       element.draw();
     });
   } else {
-    this.arrayBaloons.forEach(function(element) {
+    this.arrayBaloons.forEach(function(element,index, array) {
       if (option === 5 && this.optionCounter < 400) {
         element.draw();
         this.optionCounter++;
@@ -368,13 +370,26 @@ Game.prototype.paintBaloons = function(beginCountdown, option) {
         element.updateBaloon();
         this.optionCounter++;
       } else if(option === 3 || option === 4){
-        debugger
-        this.dividedBaloon(element, index, array, true);
+        array.splice(index, 1);
+
+      }else if(option === 7){
+        if(this.arrayLifes.length===1){
+          this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 530, 30, 7));
+        }else if(this.arrayLifes.length===2){
+          this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 570, 30, 7));
+        }else if(this.arrayLifes.length===1){
+          this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 610, 30, 7));
+        }
+        this.optionSelected=0;
       }else {
+
         element.gravity=0.1;
         element.updateBaloon();
       }
     }.bind(this));
+  }
+  if(option === 3 || option === 4){
+    this.optionSelected=0;
   }
 };
 
