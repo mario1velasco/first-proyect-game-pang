@@ -17,7 +17,6 @@ function Game(canvasId, width, height) {
   this.optionSelected = "";
   this.optionCounter = 0;
   this.points = 0;
-  debugger
   if(localStorage.recordPoints)
   this.recordPoints=localStorage.recordPoints;
   else
@@ -72,10 +71,10 @@ Game.prototype.paintScore = function() {
   // debugger
   var points = document.getElementById('points');
   points.innerHTML = this.points;
+  var recordPoints = document.getElementById('max-points');
+  recordPoints.innerHTML = this.recordPoints;
   if (this.points >= this.recordPoints) {
     this.recordPoints = this.points;
-    var recordPoints = document.getElementById('max-points');
-    recordPoints.innerHTML = this.recordPoints;
     localStorage.recordPoints = this.recordPoints;
   }
 
