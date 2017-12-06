@@ -21,13 +21,72 @@ function Player(canvasId, sprite, x, y) {
   this.sprite.frameIndex = 0;
   this.x = x - 100;
   this.dead = false;
-  this.continue=false;
-  this.shoot=false;
+  this.continue = false;
+  this.shoot = false;
+  this.isMoving = true;
+  this.action = "";
   document.onkeydown = this.onKeyDown.bind(this);
+  document.onkeyup = this.onKeyUp.bind(this);
+  // document.addEventListener("keydown", onKeyDown, false);
+  // document.addEventListener("keyup", onKeyUp, false);
 }
 
 Player.prototype.isReady = function() {
   return this.sprite.isReady;
+};
+
+Player.prototype.onKeyDown = function() {
+  if (event.keyCode == SPACEBAR) {
+    this.isMoving = true;
+    this.action = "S";
+    // this.shooting();
+  } else if (event.keyCode == RIGHT_KEY) {
+    if ((this.x) < this.canvas.width - this.widthFrame) {
+      this.isMoving = true;
+      this.action = "R";
+      // this.moveToRight();
+    }
+  } else if (event.keyCode == LEFT_KEY) {
+    if ((this.x) > 0) {
+      this.isMoving = true;
+      this.action = "L";
+      // this.moveToLeft();
+    }
+  }
+};
+
+Player.prototype.onKeyUp = function() {
+  // debugger
+  if ((event.keyCode == LEFT_KEY) || (event.keyCode == RIGHT_KEY) ||
+    (event.keyCode == SPACEBAR)) {
+    this.isMoving = false;
+  }
+};
+
+
+
+Player.prototype.draw = function() {
+  if (this.isReady) {
+    if (this.isMoving) {
+      if (this.action == "R") {
+        this.moveToRight();
+      } else if (this.action == "L") {
+        this.moveToLeft();
+      } else if (this.action == "S") {
+        this.shooting();
+      }
+    }
+    this.ctx.drawImage(
+      this.sprite, // Image
+      this.sprite.frameIndex * Math.floor(this.sprite.width / this.sprite.frames), // source x
+      0, // source y: allways 0 for this image
+      Math.floor(this.sprite.width / this.sprite.frames) - 3, // frame width quito -3 porque sobre 3 px del lado derecho
+      this.sprite.height - 1, // frame heigth sobra 1px de abajo
+      this.x, // destination x
+      this.y, // destination y
+      this.widthFrame, // destination frame width
+      this.height); // destination frame heigth
+  }
 };
 
 Player.prototype.drawDead = function() {
@@ -36,55 +95,25 @@ Player.prototype.drawDead = function() {
       this.sprite, // Image
       this.sprite.frameIndex * Math.floor(this.sprite.width / this.sprite.frames), // source x
       0, // source y: allways 0 for this image
-      Math.floor(this.sprite.width / this.sprite.frames)-3, // frame width quito -3 porque sobre 3 px del lado derecho
-      this.sprite.height-1, // frame heigth sobra 1px de abajo
+      Math.floor(this.sprite.width / this.sprite.frames) - 3, // frame width quito -3 porque sobre 3 px del lado derecho
+      this.sprite.height - 1, // frame heigth sobra 1px de abajo
       this.x, // destination x
       this.y, // destination y
       this.widthFrame, // destination frame width
       this.height); // destination frame heigth
-    }
-    this.y--;
-  };
-
-Player.prototype.draw = function() {
-  if (this.isReady) {
-    this.ctx.drawImage(
-      this.sprite, // Image
-      this.sprite.frameIndex * Math.floor(this.sprite.width / this.sprite.frames), // source x
-      0, // source y: allways 0 for this image
-      Math.floor(this.sprite.width / this.sprite.frames)-3, // frame width quito -3 porque sobre 3 px del lado derecho
-      this.sprite.height-1, // frame heigth sobra 1px de abajo
-      this.x, // destination x
-      this.y, // destination y
-      this.widthFrame, // destination frame width
-      this.height); // destination frame heigth
-    }
-  };
-
-Player.prototype.onKeyDown = function() {
-    if (event.keyCode == SPACEBAR) {
-      this.shooting();
-    } else if (event.keyCode == RIGHT_KEY) {
-      if ((this.x) < this.canvas.width - this.widthFrame) {
-        this.moveToRight();
-      }
-    } else if (event.keyCode == LEFT_KEY) {
-      if ((this.x) > 0) {
-        this.moveToLeft();
-      }
-    }
-
+  }
+  this.y--;
 };
 
 Player.prototype.shooting = function() {
   if (this.sprite.frameIndex <= 4) {
     this.sprite.frameIndex = 21;
-    this.shoot= true;
+    this.shoot = true;
   } else if (this.sprite.frameIndex >= 11 && this.sprite.frameIndex <= 19) {
     this.sprite.frameIndex = 20;
-    this.shoot= true;
-  } else if(this.sprite.frameIndex === 20 || this.sprite.frameIndex === 21)
-  this.shoot= true;
+    this.shoot = true;
+  } else if (this.sprite.frameIndex === 20 || this.sprite.frameIndex === 21)
+    this.shoot = true;
 };
 
 Player.prototype.moveToRight = function() {
@@ -93,7 +122,7 @@ Player.prototype.moveToRight = function() {
   } else {
     this.sprite.frameIndex++;
   }
-  this.x += 5;
+  this.x += 2;
 };
 
 Player.prototype.moveToLeft = function() {
@@ -105,7 +134,7 @@ Player.prototype.moveToLeft = function() {
   } else {
     this.sprite.frameIndex++;
   }
-  this.x -= 5;
+  this.x -= 2;
 };
 
 Player.prototype.die = function() {
@@ -119,6 +148,6 @@ Player.prototype.die = function() {
 };
 
 Player.prototype.win = function() {
-    this.sprite.frameIndex = 9;
+  this.sprite.frameIndex = 9;
 
 };

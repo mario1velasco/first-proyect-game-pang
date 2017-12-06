@@ -40,6 +40,9 @@ Game.prototype.loadValues = function () {
     this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png", ballPositionX, 190, 1.5, 1, 2));
   }
   document.onkeydown = this.drawContinue.bind(this);
+  document.onkeyup = this.drawStop.bind(this);
+
+
 };
 
 Game.prototype.clear = function() {
@@ -47,15 +50,19 @@ Game.prototype.clear = function() {
 };
 
 Game.prototype.drawContinue = function() {
-  debugger
   if (this.player.dead) {
     if (event.keyCode == Y_KEY) {
       var game = new Game("canvas-fb", 640, 480);
       game.draw();
     }
   } else {
+    // debugger
     this.player.onKeyDown();
   }
+};
+Game.prototype.drawStop = function() {
+  // debugger
+    this.player.onKeyUp();
 };
 
 Game.prototype.draw = function() {
@@ -128,7 +135,7 @@ Game.prototype.pickAnOptionBox = function(element, index, array) {
       break;
     case 1:
       this.weaponSelect = 3;
-      this.maxShoots = 200;
+      this.maxShoots = 10;
       array.splice(index, 1);
       break;
     case 2:
