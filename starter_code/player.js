@@ -124,6 +124,7 @@ Player.prototype.moveToRight = function() {
   } else {
     this.sprite.frameIndex++;
   }
+  if(this.x+this.widthFrame<this.canvas.width)
   this.x += this.speed;
 };
 
@@ -136,6 +137,7 @@ Player.prototype.moveToLeft = function() {
   } else {
     this.sprite.frameIndex++;
   }
+  if(this.x>0)
   this.x -= this.speed;
 };
 

@@ -1,5 +1,12 @@
+*{
+  margin: 0;
+  padding: 0;
+}
 body {
   text-align: center;
+  background-color: black;
+  font-size: 30px;
+  color: white;
 }
 
 body h1 {
@@ -8,9 +15,9 @@ body h1 {
 }
 
 body button {
-  font-size: 20px;
-  background-color: black;
-  color: #fff;
+  font-size: 30px;
+  background-color: yellow;
+  color: balck;
   padding: 10px 20px;
   border: 0;
   box-shadow: 0;
@@ -19,4 +26,23 @@ body button {
 }
 #canvas-fb{
   border: 2px solid black;
+}
+.container{
+  display: flex;
+  flex-direction: row;
+}
+.screen{
+  display: flex;
+  flex-direction: column;
+}
+#div-points{
+  display: flex;
+  justify-content: center;
+}
+.span-div{
+  margin-left: 30px;
+}
+
+#logo{
+  width: 60%
 }
