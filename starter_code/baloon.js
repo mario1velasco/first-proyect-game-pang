@@ -1,7 +1,8 @@
-var gravity = 0.1;
+
 
 function Baloon(canvasId, sprite, x, y, scale, vx, vy) {
   // debugger
+  this.gravity = 0.1;
   this.canvas = canvasId;
   this.ctx = this.canvas.getContext('2d');
   this.sprite = new Image();
@@ -32,7 +33,7 @@ Baloon.prototype.isReady = function() {
 Baloon.prototype.updateBaloon = function() {
   this.draw();
   // Apply gravity
-  this.vy += gravity;
+  this.vy += this.gravity;
   // }else{
   // this.vy+=0.002;
   // }
