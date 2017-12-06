@@ -11,13 +11,29 @@
 </head>
 
 <body>
-  <div id="logo-info">
-    <img src="./images/logo.png" alt="" style="width:20%;">
-    <br>
-    <button id="start-button">StartGame</button>
-  </div>
-  <div id="game-board">
-    <canvas id="canvas-fb" width="640" height="480"></canvas>
+  <div class="container">
+    <div class="screen">
+      <div class="" id="div-points">
+        <div class="span-div">
+          <span class="span-points">Score: </span>
+          <span class="span-points" id="max-points">0</span>
+        </div>
+        <div class="span-div">
+          <span class="span-points">Record: </span>
+          <span class="span-points" id="points">0</span>
+        </div>
+      </div>
+      <div id="game-board">
+        <canvas id="canvas-fb" width="640" height="480"></canvas>
+      </div>
+    </div>
+    <div class="" id="info">
+      <div id="logo-info">
+        <img src="./images/logo.png" id="logo">
+        <br>
+        <button id="start-button">Start Game</button>
+      </div>
+    </div>
   </div>
   <script type="text/javascript" src="background.js"></script>
   <script type="text/javascript" src="options.js"></script>

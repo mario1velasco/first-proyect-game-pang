@@ -16,6 +16,8 @@ function Game(canvasId, width, height) {
   this.loadFirstTime = true;
   this.optionSelected = "";
   this.optionCounter = 0;
+  this.points = 0;
+  this.recordPoints=0;
   this.arrayLifes = [];
   this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 490, 30, 7));
   this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 530, 30, 7));
@@ -31,7 +33,6 @@ Game.prototype.loadValues = function() {
   this.bg = new Background(this.canvas, "./images/bg8.png", this.width, this.height);
   this.over = new Over(this.canvas, "./images/game-over.png");
   this.win = new Over(this.canvas, "./images/You_win_this_time.png", true);
-  //this.points=0;
   this.weaponsShoot = [];
   this.arrayOptionsBox = [];
   this.player = new Player(this.canvas, "./images/pang.png", 370, this.height);
@@ -42,8 +43,6 @@ Game.prototype.loadValues = function() {
   }
   document.onkeydown = this.drawContinue.bind(this);
   document.onkeyup = this.drawStop.bind(this);
-
-
 };
 
 Game.prototype.clear = function() {
@@ -66,7 +65,14 @@ Game.prototype.drawStop = function() {
   this.player.onKeyUp();
 };
 
+Game.prototype.paintScore = function () {
+  // debugger
+  var points=document.getElementById('points');
+  points.innerHTML=this.points;
+};
+
 Game.prototype.draw = function() {
+  this.paintScore();
   if (this.loadFirstTime) {
     //Load inicial values
     this.loadFirstTime = false;
@@ -102,6 +108,7 @@ Game.prototype.draw = function() {
     }).bind(this));
     this.arrayOptionsBox.forEach((function(element, index, array) {
       if (this.playerColision(element, index, array)) {
+
         this.pickAnOptionBox(element, index, array);
       }
     }).bind(this));
@@ -127,6 +134,7 @@ Game.prototype.shootAndCHeckColisionWithBalls = function(bool) {
     this.arrayBaloons.forEach((function(element, index, array) {
       if (this.weaponColision(element, i, index, array)) {
         //Split ball in two or delete it
+        this.points +=10;
         this.dividedBaloon(element, index, array);
         impact = true;
       }
@@ -141,45 +149,53 @@ Game.prototype.pickAnOptionBox = function(element, index, array) {
       this.weaponSelect = 1;
       this.maxShoots = 2;
       this.optionSelected = 0;
+      this.points +=10;
       array.splice(index, 1);
       break;
     case 1:
       this.weaponSelect = 3;
       this.maxShoots = 10;
       this.optionSelected = 1;
+      this.points +=10;
       array.splice(index, 1);
       break;
     case 2:
       this.weaponSelect = 0;
       this.maxShoots = 1;
       this.optionSelected = 2;
+      this.points +=10;
       array.splice(index, 1);
       break;
     case 3:
       //dinamite
       this.optionSelected = 3;
+      this.points +=10;
       array.splice(index, 1);
       break;
     case 4:
-      //dinamite
+      //Sonic speed
       this.optionSelected = 4;
+      this.points +=20;
       array.splice(index, 1);
       break;
     case 5:
       //ball stop
       this.optionSelected = 5;
-      this.optionCounter=0;
+      this.optionCounter = 0;
+      this.points +=20;
       array.splice(index, 1);
       break;
     case 6:
       //crazy gravity
       this.optionSelected = 6;
-      this.optionCounter=0;
+      this.optionCounter = 0;
+      this.points +=30;
       array.splice(index, 1);
       break;
     case 7:
       //life
       this.optionSelected = 7;
+      this.points +=50;
       array.splice(index, 1);
       break;
     default:
@@ -197,7 +213,7 @@ Game.prototype.paintWin = function() {
   if (this.win.countdown > 80) {
     this.win.draw();
   } else {
-    // debugger
+    this.points +=(this.gameLevel*100);
     this.gameLevel++;
     this.loadValues();
   }
@@ -232,10 +248,9 @@ Game.prototype.playerDie = function() {
 };
 
 Game.prototype.dividedBaloon = function(element, index, array) {
-  if (element.sprite.scale === 0.5){
+  if (element.sprite.scale === 0.5) {
     array.splice(index, 1);
-  }
-  else {
+  } else {
     this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png",
       (element.x + element.radius + 10), (element.y - 20), (element.sprite.scale - 0.5), 1, -2));
     this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png",
@@ -243,9 +258,9 @@ Game.prototype.dividedBaloon = function(element, index, array) {
     array.splice(index, 1);
     //CREATE AN OPTION BOX
     // debugger
-    if(Math.floor(Math.random()*3)===1){
-      this.arrayOptionsBox.push(new Options(this.canvas, "./images/options2.png", element.x, element.y, //1));
-      Math.floor(Math.random() * 8)));
+    if (Math.floor(Math.random() * 3) === 1) {
+      this.arrayOptionsBox.push(new Options(this.canvas, "./images/options2.png", element.x, element.y, //7));
+        Math.floor(Math.random() * 8)));
     }
   }
 };
@@ -361,35 +376,38 @@ Game.prototype.paintBaloons = function(beginCountdown, option) {
       element.draw();
     });
   } else {
-    this.arrayBaloons.forEach(function(element,index, array) {
+    this.arrayBaloons.forEach(function(element, index, array) {
       if (option === 5 && this.optionCounter < 400) {
         element.draw();
         this.optionCounter++;
       } else if (option === 6 && this.optionCounter < 900) {
-        element.gravity=0;
+        element.gravity = 0;
         element.updateBaloon();
         this.optionCounter++;
-      } else if(option === 3 || option === 4){
+      } else if (option === 3) {
         array.splice(index, 1);
 
-      }else if(option === 7){
-        if(this.arrayLifes.length===1){
+      } else if (option === 7) {
+        if (this.arrayLifes.length === 1) {
           this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 530, 30, 7));
-        }else if(this.arrayLifes.length===2){
+        } else if (this.arrayLifes.length === 2) {
           this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 570, 30, 7));
-        }else if(this.arrayLifes.length===1){
+        } else if (this.arrayLifes.length === 1) {
           this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 610, 30, 7));
         }
-        this.optionSelected=0;
-      }else {
+        this.optionSelected = 0;
+      } else if (option === 4) {
+        this.player.speed = 6;
 
-        element.gravity=0.1;
+      } else {
+
+        element.gravity = 0.1;
         element.updateBaloon();
       }
     }.bind(this));
   }
-  if(option === 3 || option === 4){
-    this.optionSelected=0;
+  if (option === 3 || option === 4) {
+    this.optionSelected = 0;
   }
 };
 

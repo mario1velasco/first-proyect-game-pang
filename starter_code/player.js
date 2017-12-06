@@ -21,9 +21,11 @@ function Player(canvasId, sprite, x, y) {
   this.sprite.frameIndex = 0;
   this.x = x - 100;
   this.dead = false;
+  this.speed=2;
   this.continue = false;
   this.shoot = false;
   this.isMoving = true;
+  this.points=0;
   this.action = "";
   document.onkeydown = this.onKeyDown.bind(this);
   document.onkeyup = this.onKeyUp.bind(this);
@@ -122,7 +124,7 @@ Player.prototype.moveToRight = function() {
   } else {
     this.sprite.frameIndex++;
   }
-  this.x += 2;
+  this.x += this.speed;
 };
 
 Player.prototype.moveToLeft = function() {
@@ -134,7 +136,7 @@ Player.prototype.moveToLeft = function() {
   } else {
     this.sprite.frameIndex++;
   }
-  this.x -= 2;
+  this.x -= this.speed;
 };
 
 Player.prototype.die = function() {
