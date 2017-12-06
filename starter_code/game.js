@@ -17,7 +17,11 @@ function Game(canvasId, width, height) {
   this.optionSelected = "";
   this.optionCounter = 0;
   this.points = 0;
-  this.recordPoints=0;
+  debugger
+  if(localStorage.recordPoints)
+  this.recordPoints=localStorage.recordPoints;
+  else
+  this.recordPoints = 0;
   this.arrayLifes = [];
   this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 490, 30, 7));
   this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 530, 30, 7));
@@ -28,6 +32,7 @@ function Game(canvasId, width, height) {
 }
 
 Game.prototype.loadValues = function() {
+
   this.beginCountdown = true;
   this.countdown = 180;
   this.bg = new Background(this.canvas, "./images/bg8.png", this.width, this.height);
@@ -56,19 +61,24 @@ Game.prototype.drawContinue = function() {
       game.draw();
     }
   } else {
-    // debugger
     this.player.onKeyDown();
   }
 };
 Game.prototype.drawStop = function() {
-  // debugger
   this.player.onKeyUp();
 };
 
-Game.prototype.paintScore = function () {
+Game.prototype.paintScore = function() {
   // debugger
-  var points=document.getElementById('points');
-  points.innerHTML=this.points;
+  var points = document.getElementById('points');
+  points.innerHTML = this.points;
+  if (this.points >= this.recordPoints) {
+    this.recordPoints = this.points;
+    var recordPoints = document.getElementById('max-points');
+    recordPoints.innerHTML = this.recordPoints;
+    localStorage.recordPoints = this.recordPoints;
+  }
+
 };
 
 Game.prototype.draw = function() {
@@ -134,7 +144,7 @@ Game.prototype.shootAndCHeckColisionWithBalls = function(bool) {
     this.arrayBaloons.forEach((function(element, index, array) {
       if (this.weaponColision(element, i, index, array)) {
         //Split ball in two or delete it
-        this.points +=10;
+        this.points += 10;
         this.dividedBaloon(element, index, array);
         impact = true;
       }
@@ -149,53 +159,53 @@ Game.prototype.pickAnOptionBox = function(element, index, array) {
       this.weaponSelect = 1;
       this.maxShoots = 2;
       this.optionSelected = 0;
-      this.points +=10;
+      this.points += 10;
       array.splice(index, 1);
       break;
     case 1:
       this.weaponSelect = 3;
       this.maxShoots = 10;
       this.optionSelected = 1;
-      this.points +=10;
+      this.points += 10;
       array.splice(index, 1);
       break;
     case 2:
       this.weaponSelect = 0;
       this.maxShoots = 1;
       this.optionSelected = 2;
-      this.points +=10;
+      this.points += 10;
       array.splice(index, 1);
       break;
     case 3:
       //dinamite
       this.optionSelected = 3;
-      this.points +=10;
+      this.points += 10;
       array.splice(index, 1);
       break;
     case 4:
       //Sonic speed
       this.optionSelected = 4;
-      this.points +=20;
+      this.points += 20;
       array.splice(index, 1);
       break;
     case 5:
       //ball stop
       this.optionSelected = 5;
       this.optionCounter = 0;
-      this.points +=20;
+      this.points += 20;
       array.splice(index, 1);
       break;
     case 6:
       //crazy gravity
       this.optionSelected = 6;
       this.optionCounter = 0;
-      this.points +=30;
+      this.points += 30;
       array.splice(index, 1);
       break;
     case 7:
       //life
       this.optionSelected = 7;
-      this.points +=50;
+      this.points += 50;
       array.splice(index, 1);
       break;
     default:
@@ -213,7 +223,7 @@ Game.prototype.paintWin = function() {
   if (this.win.countdown > 80) {
     this.win.draw();
   } else {
-    this.points +=(this.gameLevel*100);
+    this.points += (this.gameLevel * 100);
     this.gameLevel++;
     this.loadValues();
   }
