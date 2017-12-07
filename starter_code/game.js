@@ -17,10 +17,10 @@ function Game(canvasId, width, height) {
   this.optionSelected = "";
   this.optionCounter = 0;
   this.points = 0;
-  if(localStorage.recordPoints)
-  this.recordPoints=localStorage.recordPoints;
+  if (localStorage.recordPoints)
+    this.recordPoints = localStorage.recordPoints;
   else
-  this.recordPoints = 0;
+    this.recordPoints = 0;
   this.arrayLifes = [];
   this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 490, 30, 7));
   this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 530, 30, 7));
@@ -43,7 +43,7 @@ Game.prototype.loadValues = function() {
   this.arrayBaloons = [];
   for (var i = 1; i <= this.gameLevel; i++) {
     var ballPositionX = Math.floor(Math.random() * 560);
-    var ballPositiony = Math.floor(Math.random() * 90)+100;
+    var ballPositiony = Math.floor(Math.random() * 90) + 100;
     this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png", ballPositionX, ballPositiony, 1.5, 1, 2));
   }
   document.onkeydown = this.drawContinue.bind(this);
@@ -269,8 +269,8 @@ Game.prototype.dividedBaloon = function(element, index, array) {
     //CREATE AN OPTION BOX
     // debugger
     if (Math.floor(Math.random() * 3) === 1) {
-      this.arrayOptionsBox.push(new Options(this.canvas, "./images/options2.png", element.x, element.y, 1));
-        //Math.floor(Math.random() * 8)));
+      this.arrayOptionsBox.push(new Options(this.canvas, "./images/options2.png", element.x, element.y, 5));
+      //Math.floor(Math.random() * 8)));
     }
   }
 };
@@ -294,7 +294,7 @@ Game.prototype.weaponColision = function(element, i, index, array) {
         // alert("COL VERTICAL Derecha");
         colision = true;
       }
-      if ((this.weaponsShoot[i].x+10 === (Math.floor(element.x) + Math.floor(element.width)))) {
+      if ((this.weaponsShoot[i].x + 10 === (Math.floor(element.x) + Math.floor(element.width)))) {
         // alert("COL VERTICAL Izquierda");
         colision = true;
       }
@@ -302,7 +302,7 @@ Game.prototype.weaponColision = function(element, i, index, array) {
     //COLISON FRONTAL
     //primero comprueba que el y de la bola y player coincidan +-6
     // if ((this.weaponsShoot[i].y <= (element.y + element.height)) &&
-      // (this.weaponsShoot[i].y >= (element.y + element.height - 6))) {
+    // (this.weaponsShoot[i].y >= (element.y + element.height - 6))) {
     if ((this.weaponsShoot[i].y <= (element.y + element.height))) {
       //Calcula para cada pixel del arma x si esta entre la bola, si esta hay colisión
       // debugger
@@ -316,11 +316,11 @@ Game.prototype.weaponColision = function(element, i, index, array) {
         }
       }
     }
-  }else{
+  } else {
     //COLISON FRONTAL
     //primero comprueba que el y de la bola y player coincidan +-6
     if ((this.weaponsShoot[i].y <= (element.y + element.height)) &&
-    (this.weaponsShoot[i].y >= (element.y + element.height - 6))) {
+      (this.weaponsShoot[i].y >= (element.y + element.height - 6))) {
       //Calcula para cada pixel del arma x si esta entre la bola, si esta hay colisión
       for (var g = 20; g <= this.weaponsShoot[i].widthFrame; g++) {
         if (this.weaponsShoot[i].x + g > element.x) {
@@ -405,36 +405,38 @@ Game.prototype.paintBaloons = function(beginCountdown, option) {
     });
   } else {
     this.arrayBaloons.forEach(function(element, index, array) {
-      if (option === 5 && this.optionCounter < 400) {
+      if (option === 3) {
+        array.splice(Math.floor(Math.random()*index), 1);
+        array.splice(Math.floor(Math.random()*index), 1);
+        array.splice(Math.floor(Math.random()*index), 1);
+        option=0;
+      } else if (option === 4) {
+        this.player.speed = 4;
+        option=0;
+      } else if (option === 5 && this.optionCounter < 900) {
+        // debugger
         element.draw();
         this.optionCounter++;
       } else if (option === 6 && this.optionCounter < 900) {
         element.gravity = 0;
         element.updateBaloon();
         this.optionCounter++;
-      } else if (option === 3) {
-        array.splice(index, 1);
-
       } else if (option === 7) {
         if (this.arrayLifes.length === 1) {
           this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 530, 30, 7));
         } else if (this.arrayLifes.length === 2) {
           this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 570, 30, 7));
-        } else if (this.arrayLifes.length === 1) {
+        } else if (this.arrayLifes.length === 3) {
           this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 610, 30, 7));
         }
-        this.optionSelected = 0;
-      } else if (option === 4) {
-        this.player.speed = 4;
-
+        option=0;
       } else {
-
         element.gravity = 0.1;
         element.updateBaloon();
       }
     }.bind(this));
   }
-  if (option === 3 || option === 4) {
+  if (option === 0) {
     this.optionSelected = 0;
   }
 };
