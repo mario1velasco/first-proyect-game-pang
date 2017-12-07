@@ -12,7 +12,7 @@ function Game(canvasId, width, height) {
   // this.countdown = 180;
   this.maxShoots = 1;
   this.weaponSelect = 1;
-  // debugger
+
   this.loadFirstTime = true;
   this.optionSelected = "";
   this.optionCounter = 0;
@@ -25,7 +25,7 @@ function Game(canvasId, width, height) {
   this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 490, 30, 7));
   this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 530, 30, 7));
   // this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 570, 30, 7));
-
+  this.isDead = false;
   this.gameLevel = 1;
   // document.onkeydown = this.keyDown.bind(this);
 }
@@ -35,19 +35,105 @@ Game.prototype.loadValues = function() {
   this.beginCountdown = true;
   this.countdown = 180;
   this.bg = new Background(this.canvas, "./images/bg8.png", this.width, this.height);
-  this.over = new Over(this.canvas, "./images/game-over.png");
+
   this.win = new Over(this.canvas, "./images/You_win_this_time.png", true);
   this.weaponsShoot = [];
   this.arrayOptionsBox = [];
   this.player = new Player(this.canvas, "./images/pang.png", 370, this.height);
+this.isDead = false;
   this.arrayBaloons = [];
   for (var i = 1; i <= this.gameLevel; i++) {
     var ballPositionX = Math.floor(Math.random() * 560);
     var ballPositiony = Math.floor(Math.random() * 90) + 100;
     this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png", ballPositionX, ballPositiony, 1.5, 1, 2));
   }
+  this.soundsAndEffects("stage" + (Math.floor(Math.random() * 3) + 1));
+
   document.onkeydown = this.keyDown.bind(this);
   document.onkeyup = this.keyUp.bind(this);
+};
+
+Game.prototype.soundsAndEffects = function(val) {
+  switch (val) {
+    case "stage1":
+      var audio = document.getElementById('music');
+      var source = document.getElementById('music-source');
+      source.setAttribute("src", "./sounds/stage1.mp3");
+      audio.load(); //call this to just preload the audio without playing
+      audio.play(); //call this to play the song right away
+      break;
+    case "stage2":
+      audio = document.getElementById('music');
+      source = document.getElementById('music-source');
+      source.setAttribute("src", "./sounds/stage2.mp3");
+      audio.load(); //call this to just preload the audio without playing
+      audio.play(); //call this to play the song right away
+      break;
+    case "stage3":
+      audio = document.getElementById('music');
+      source = document.getElementById('music-source');
+      source.setAttribute("src", "./sounds/stage3.mp3");
+      audio.load(); //call this to just preload the audio without playing
+      audio.play(); //call this to play the song right away
+      break;
+    case "continue":
+      if (this.over.countdown === 870) {
+        audio = document.getElementById('music');
+        source = document.getElementById('music-source');
+        source.setAttribute("src", "./sounds/continue.mp3");
+        audio.load(); //call this to just preload the audio without playing
+        audio.play(); //call this to play the song right away
+      }
+      break;
+    case "gameOver":
+      if (this.over.countdown === 80) {
+        this.over.countdown--;
+        audio = document.getElementById('music');
+        source = document.getElementById('music-source');
+        source.setAttribute("src", "./sounds/gameOver.mp3");
+        audio.load(); //call this to just preload the audio without playing
+        audio.play(); //call this to play the song right away
+      }
+      break;
+    case "intro":
+      audio = document.getElementById('music');
+      source = document.getElementById('music-source');
+      source.setAttribute("src", "./sounds/intro.mp3");
+      audio.load(); //call this to just preload the audio without playing
+      audio.play(); //call this to play the song right away
+      break;
+    case "speedUp":
+      audio = document.getElementById('music');
+      source = document.getElementById('music-source');
+      source.setAttribute("src", "./sounds/speedUp.mp3");
+      audio.load(); //call this to just preload the audio without playing
+      audio.play(); //call this to play the song right away
+      break;
+    case "stageClear":
+      if (this.win.countdown === 870) {
+        audio = document.getElementById('music');
+        source = document.getElementById('music-source');
+        source.setAttribute("src", "./sounds/stageClear.mp3");
+        audio.load(); //call this to just preload the audio without playing
+        audio.play(); //call this to play the song right away
+      }
+      break;
+    case "ballColision":
+      audio = document.getElementById('effects');
+      source = document.getElementById('effects-source');
+      source.setAttribute("src", "./sounds/ballColision.wav");
+      audio.load(); //call this to just preload the audio without playing
+      audio.play(); //call this to play the song right away
+      break;
+    case "dead":
+      audio = document.getElementById('effects');
+      source = document.getElementById('effects-source');
+      source.setAttribute("src", "./sounds/dead.wav");
+      audio.load(); //call this to just preload the audio without playing
+      audio.play(); //call this to play the song right away
+      break;
+    default:
+  }
 };
 
 Game.prototype.clear = function() {
@@ -70,8 +156,9 @@ Game.prototype.draw = function() {
     this.drawCountdownBeginning(50, 150);
   } else if (this.arrayBaloons.length === 0) {
     // You explote all balls
+    this.soundsAndEffects("stageClear");
     this.paintWin();
-  } else if (!this.player.dead) {
+  } else if (!this.isDead) {
     // Normal game
     this.clear();
     this.bg.draw();
@@ -82,6 +169,9 @@ Game.prototype.draw = function() {
     this.paintOptionBoxs();
     this.arrayBaloons.forEach((function(element, index, array) {
       if (this.playerColision(element, index, array)) {
+        //Change this.player.die set to true and sprite
+        this.over = new Over(this.canvas, "./images/game-over.png");
+        this.isDead = true;
         this.player.die();
         element.updateBaloon();
         element.updateBaloon();
@@ -101,8 +191,6 @@ Game.prototype.draw = function() {
   this.requestId = window.requestAnimationFrame(this.draw.bind(this));
 };
 
-
-
 Game.prototype.drawCountdownBeginning = function(x, y) {
   //1100 son 13s lo justo para poner un sonido
   if (this.countdown <= 870) {
@@ -118,16 +206,15 @@ Game.prototype.drawCountdownBeginning = function(x, y) {
 };
 
 Game.prototype.playerDie = function() {
+  // If you got lifes and it is not the countdown from the beggining
   if (this.arrayLifes.length > 1 && (this.beginCountdown === false)) {
-    //Initialize components if you got lifes
     this.arrayLifes.pop();
-    this.player.dead = false;
     this.player.x = 270;
     this.loadValues();
   } else {
     // Paint dead scene
+    this.soundsAndEffects("continue");
     this.arrayLifes.pop();
-    this.player.dead = true;
     this.clear();
     this.bg.draw();
     this.paintLifes();
@@ -136,6 +223,7 @@ Game.prototype.playerDie = function() {
       this.player.draw();
       this.over.draw();
     } else {
+      this.soundsAndEffects("gameOver");
       this.player.drawDead();
     }
   }
@@ -173,7 +261,6 @@ Game.prototype.paintLifes = function() {
 };
 
 Game.prototype.paintShoot = function(i, impact, weaponSelect) {
-  // debugger
   if (weaponSelect === 0 && this.weaponsShoot[i].y < 3) {
     this.weaponsShoot[i].y += 3;
     this.weaponsShoot[i].draw();
@@ -182,7 +269,6 @@ Game.prototype.paintShoot = function(i, impact, weaponSelect) {
     }
   } else {
     if (this.weaponsShoot[i].y <= 0 || impact === true) {
-      // debugger
       this.weaponsShoot.splice(i, 1);
     } else {
       this.weaponsShoot[i].draw();
@@ -191,7 +277,6 @@ Game.prototype.paintShoot = function(i, impact, weaponSelect) {
 };
 
 Game.prototype.paintBaloons = function(beginCountdown, option) {
-  // debugger
   if (beginCountdown) {
     this.arrayBaloons.forEach(function(element) {
       element.draw();
@@ -243,10 +328,12 @@ Game.prototype.paintOptionBoxs = function() {
 };
 
 Game.prototype.keyDown = function() {
-  if (this.player.dead) {
+  if (this.isDead) {
     if (event.keyCode == Y_KEY) {
+      // this.isDead=false;
       var game = new Game("canvas-fb", 640, 480);
       game.draw();
+      this.isDead=false;
     }
   } else {
     this.player.onKeyDown();
@@ -257,9 +344,7 @@ Game.prototype.keyUp = function() {
 };
 
 Game.prototype.shootAndCHeckColisionWithBalls = function(bool) {
-  // debugger
   if (bool) {
-    // debugger
     this.player.shoot = false;
     if (this.maxShoots !== this.weaponsShoot.length) {
       this.weaponsShoot.push(new Weapon(this.canvas, "./images/weapons2.png",
@@ -272,6 +357,7 @@ Game.prototype.shootAndCHeckColisionWithBalls = function(bool) {
       if (this.weaponColision(element, i, index, array)) {
         //Split ball in two or delete it
         this.points += 10;
+        this.soundsAndEffects("ballColision");
         this.dividedBaloon(element, index, array);
         impact = true;
       }
@@ -324,7 +410,6 @@ Game.prototype.weaponColision = function(element, i, index, array) {
         }
       }
     }
-
   }
   return colision;
 };
@@ -335,12 +420,10 @@ Game.prototype.playerColision = function(element, index, array) {
   if ((element.y + element.height) > this.player.y) {
     if (((element.x + Math.floor(element.widthFrame)) === this.player.x + 3)) {
       isColision = true;
-      // debugger
       // alert("COL VERTICAL Izquierda");
     }
     if ((element.x === (this.player.x + Math.floor(this.player.widthFrame) - 10))) {
       isColision = true;
-      // debugger
       // alert("COL VERTICAL Derecha");
     }
   }
@@ -354,7 +437,6 @@ Game.prototype.playerColision = function(element, index, array) {
       if (this.player.x + j > element.x) {
         //Lado izquierdo
         if (this.player.x + j + 3 < element.x + Math.floor(element.widthFrame)) {
-          // debugger
           isColision = true;
           break;
           // alert("COL FRONTAL");
@@ -376,12 +458,11 @@ Game.prototype.dividedBaloon = function(element, index, array) {
     array.splice(index, 1);
     //CREATE AN OPTION BOX
     if (Math.floor(Math.random() * 3) === 1) {
-      this.arrayOptionsBox.push(new Options(this.canvas, "./images/options2.png", element.x, element.y, 5));
+      this.arrayOptionsBox.push(new Options(this.canvas, "./images/options2.png", element.x, element.y, 4));
       //Math.floor(Math.random() * 8)));
     }
   }
 };
-
 
 Game.prototype.pickAnOptionBox = function(element, index, array) {
   switch (element.sprite.frameIndex) {
@@ -416,6 +497,7 @@ Game.prototype.pickAnOptionBox = function(element, index, array) {
       //Sonic speed
       this.optionSelected = 4;
       this.points += 20;
+      this.soundsAndEffects("speedUp");
       array.splice(index, 1);
       break;
     case 5:
@@ -440,6 +522,5 @@ Game.prototype.pickAnOptionBox = function(element, index, array) {
       break;
     default:
       this.optionSelected = "";
-
   }
 };

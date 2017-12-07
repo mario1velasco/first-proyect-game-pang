@@ -20,7 +20,6 @@ function Player(canvasId, sprite, x, y) {
   this.sprite.frames = 22;
   this.sprite.frameIndex = 0;
   this.x = x - 100;
-  this.dead = false;
   this.speed = 2;
   this.continue = false;
   this.shoot = false;
@@ -64,8 +63,6 @@ Player.prototype.onKeyUp = function() {
     this.isMoving = false;
   }
 };
-
-
 
 Player.prototype.draw = function() {
   if (this.isReady) {
@@ -142,7 +139,6 @@ Player.prototype.moveToLeft = function() {
 };
 
 Player.prototype.die = function() {
-  this.dead = true;
   if (this.sprite.frameIndex <= 4) {
     this.sprite.frameIndex = 19;
   }
