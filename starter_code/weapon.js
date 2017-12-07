@@ -39,7 +39,7 @@ Weapon.prototype.paintGun = function () {
       0, // source y: allways 0 for this image
       Math.floor(this.sprite.width / this.sprite.frames) - 6, // frame width
       this.sprite.height - 2, // frame heigth
-      this.x, // destination x
+      this.x+10, // destination x
       this.y, // destination y
       this.widthFrame, // destination frame width
       this.height); // destination frame heigth
@@ -51,7 +51,7 @@ Weapon.prototype.paintSubMachineGun = function () {
   // debugger
   if (this.isReady) {
     this.ctx.beginPath();
-      this.ctx.arc(this.x+5, this.y, 4, 0, 2 * Math.PI, false);
+      this.ctx.arc(this.x+20, this.y, 4, 0, 2 * Math.PI, false);
       this.ctx.fillStyle = 'rgb(180, 189, 181)';
       this.ctx.fill();
       this.ctx.lineWidth = 2;
