@@ -25,7 +25,7 @@ function Game(canvasId, width, height) {
   this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 490, 30, 7));
   this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 530, 30, 7));
   // this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 570, 30, 7));
-  this.isDead = false;
+  this.isDead = 0;
   this.gameLevel = 1;
   // document.onkeydown = this.keyDown.bind(this);
 }
@@ -40,7 +40,7 @@ Game.prototype.loadValues = function() {
   this.weaponsShoot = [];
   this.arrayOptionsBox = [];
   this.player = new Player(this.canvas, "./images/pang.png", 370, this.height);
-this.isDead = false;
+this.isDead = 0;
   this.arrayBaloons = [];
   for (var i = 1; i <= this.gameLevel; i++) {
     var ballPositionX = Math.floor(Math.random() * 560);
@@ -49,8 +49,8 @@ this.isDead = false;
   }
   this.soundsAndEffects("stage" + (Math.floor(Math.random() * 3) + 1));
 
-  document.onkeydown = this.keyDown.bind(this);
-  document.onkeyup = this.keyUp.bind(this);
+  // document.onkeydown = this.keyDown.bind(this);
+  // document.onkeyup = this.keyUp.bind(this);
 };
 
 Game.prototype.soundsAndEffects = function(val) {
@@ -158,7 +158,7 @@ Game.prototype.draw = function() {
     // You explote all balls
     this.soundsAndEffects("stageClear");
     this.paintWin();
-  } else if (!this.isDead) {
+  } else if (this.isDead===0) {
     // Normal game
     this.clear();
     this.bg.draw();
@@ -171,7 +171,7 @@ Game.prototype.draw = function() {
       if (this.playerColision(element, index, array)) {
         //Change this.player.die set to true and sprite
         this.over = new Over(this.canvas, "./images/game-over.png");
-        this.isDead = true;
+        this.isDead = 1;
         this.player.die();
         element.updateBaloon();
         element.updateBaloon();
@@ -327,21 +327,21 @@ Game.prototype.paintOptionBoxs = function() {
   });
 };
 
-Game.prototype.keyDown = function() {
-  if (this.isDead) {
-    if (event.keyCode == Y_KEY) {
-      // this.isDead=false;
-      var game = new Game("canvas-fb", 640, 480);
-      game.draw();
-      this.isDead=false;
-    }
-  } else {
-    this.player.onKeyDown();
-  }
-};
-Game.prototype.keyUp = function() {
-  this.player.onKeyUp();
-};
+// Game.prototype.keyDown = function() {
+//   if (this.isDead) {
+//     if (event.keyCode == Y_KEY) {
+//       // this.isDead=false;
+//       var game = new Game("canvas-fb", 640, 480);
+//       game.draw();
+//       // this.isDead=false;
+//     }
+//   } else {
+//     this.player.onKeyDown();
+//   }
+// };
+// Game.prototype.keyUp = function() {
+//   this.player.onKeyUp();
+// };
 
 Game.prototype.shootAndCHeckColisionWithBalls = function(bool) {
   if (bool) {
