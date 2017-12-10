@@ -25,22 +25,27 @@ function Game(canvasId, width, height) {
   this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 490, 30, 7));
   this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 530, 30, 7));
   // this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 570, 30, 7));
-  this.isDead = 0;
+  this.isDead = false;
   this.gameLevel = 1;
   // document.onkeydown = this.keyDown.bind(this);
+  this.bg = "";
+  this.win = "";
+  this.over = "";
+  this.player = "";
 }
 
 Game.prototype.loadValues = function() {
   //Initialize values at the beggining and when you die
+  this.bg = new Background(this.canvas, "./images/bg8.png", this.width, this.height);
+  this.win = new Over(this.canvas, "./images/You_win_this_time.png", true);
+  this.over = new Over(this.canvas, "./images/game-over.png",false);
+  this.player = new Player(this.canvas, "./images/pang.png", 370, this.height);
+
   this.beginCountdown = true;
   this.countdown = 180;
-  this.bg = new Background(this.canvas, "./images/bg8.png", this.width, this.height);
-
-  this.win = new Over(this.canvas, "./images/You_win_this_time.png", true);
   this.weaponsShoot = [];
   this.arrayOptionsBox = [];
-  this.player = new Player(this.canvas, "./images/pang.png", 370, this.height);
-this.isDead = 0;
+  this.isDead = false;
   this.arrayBaloons = [];
   for (var i = 1; i <= this.gameLevel; i++) {
     var ballPositionX = Math.floor(Math.random() * 560);
@@ -49,8 +54,8 @@ this.isDead = 0;
   }
   this.soundsAndEffects("stage" + (Math.floor(Math.random() * 3) + 1));
 
-  // document.onkeydown = this.keyDown.bind(this);
-  // document.onkeyup = this.keyUp.bind(this);
+  document.onkeydown = this.keyDown.bind(this);
+  document.onkeyup = this.keyUp.bind(this);
 };
 
 Game.prototype.soundsAndEffects = function(val) {
@@ -132,6 +137,20 @@ Game.prototype.soundsAndEffects = function(val) {
       audio.load(); //call this to just preload the audio without playing
       audio.play(); //call this to play the song right away
       break;
+    case "optionBox":
+      audio = document.getElementById('effects');
+      source = document.getElementById('effects-source');
+      source.setAttribute("src", "./sounds/optionBox.wav");
+      audio.load(); //call this to just preload the audio without playing
+      audio.play(); //call this to play the song right away
+      break;
+    case "shoot":
+      audio = document.getElementById('effects');
+      source = document.getElementById('effects-source');
+      source.setAttribute("src", "./sounds/shoot.wav");
+      audio.load(); //call this to just preload the audio without playing
+      audio.play(); //call this to play the song right away
+      break;
     default:
   }
 };
@@ -158,7 +177,7 @@ Game.prototype.draw = function() {
     // You explote all balls
     this.soundsAndEffects("stageClear");
     this.paintWin();
-  } else if (this.isDead===0) {
+  } else if (!this.isDead) {
     // Normal game
     this.clear();
     this.bg.draw();
@@ -170,8 +189,9 @@ Game.prototype.draw = function() {
     this.arrayBaloons.forEach((function(element, index, array) {
       if (this.playerColision(element, index, array)) {
         //Change this.player.die set to true and sprite
-        this.over = new Over(this.canvas, "./images/game-over.png");
-        this.isDead = 1;
+        this.soundsAndEffects("intro");
+        this.soundsAndEffects("dead");
+        this.isDead = true;
         this.player.die();
         element.updateBaloon();
         element.updateBaloon();
@@ -181,6 +201,7 @@ Game.prototype.draw = function() {
     }).bind(this));
     this.arrayOptionsBox.forEach((function(element, index, array) {
       if (this.playerColision(element, index, array)) {
+        this.soundsAndEffects("optionBox");
         this.pickAnOptionBox(element, index, array);
       }
     }).bind(this));
@@ -213,7 +234,7 @@ Game.prototype.playerDie = function() {
     this.loadValues();
   } else {
     // Paint dead scene
-    this.soundsAndEffects("continue");
+    // this.soundsAndEffects("continue");
     this.arrayLifes.pop();
     this.clear();
     this.bg.draw();
@@ -223,7 +244,7 @@ Game.prototype.playerDie = function() {
       this.player.draw();
       this.over.draw();
     } else {
-      this.soundsAndEffects("gameOver");
+      // this.soundsAndEffects("gameOver");
       this.player.drawDead();
     }
   }
@@ -327,26 +348,19 @@ Game.prototype.paintOptionBoxs = function() {
   });
 };
 
-// Game.prototype.keyDown = function() {
-//   if (this.isDead) {
-//     if (event.keyCode == Y_KEY) {
-//       // this.isDead=false;
-//       var game = new Game("canvas-fb", 640, 480);
-//       game.draw();
-//       // this.isDead=false;
-//     }
-//   } else {
-//     this.player.onKeyDown();
-//   }
-// };
-// Game.prototype.keyUp = function() {
-//   this.player.onKeyUp();
-// };
+Game.prototype.keyDown = function() {
+  if (!this.isDead)
+    this.player.onKeyDown();
+};
+Game.prototype.keyUp = function() {
+  this.player.onKeyUp();
+};
 
 Game.prototype.shootAndCHeckColisionWithBalls = function(bool) {
   if (bool) {
     this.player.shoot = false;
     if (this.maxShoots !== this.weaponsShoot.length) {
+      this.soundsAndEffects("shoot");
       this.weaponsShoot.push(new Weapon(this.canvas, "./images/weapons2.png",
         this.player.x, this.player.y, this.weaponSelect));
     }
@@ -458,8 +472,8 @@ Game.prototype.dividedBaloon = function(element, index, array) {
     array.splice(index, 1);
     //CREATE AN OPTION BOX
     if (Math.floor(Math.random() * 3) === 1) {
-      this.arrayOptionsBox.push(new Options(this.canvas, "./images/options2.png", element.x, element.y, 4));
-      //Math.floor(Math.random() * 8)));
+      this.arrayOptionsBox.push(new Options(this.canvas, "./images/options2.png", element.x, element.y,// 4));
+      Math.floor(Math.random() * 8)));
     }
   }
 };
