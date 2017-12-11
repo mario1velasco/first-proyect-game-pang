@@ -111,7 +111,6 @@ Game.prototype.draw = function() {
 };
 
 Game.prototype.drawCountdownBeginning = function(x, y) {
-  //1100 son 13s lo justo para poner un sonido
   if (this.countdown <= 870) {
     this.ctx.font = 'bold 70px serif';
     this.ctx.fillStyle = 'black';
@@ -133,7 +132,6 @@ Game.prototype.playerDie = function() {
     this.loadValues();
   } else {
     // Paint dead scene
-    // this.soundsAndEffects("continue");
     this.arrayLifes.pop();
     this.clear();
     this.bg.draw();
@@ -143,7 +141,6 @@ Game.prototype.playerDie = function() {
       this.player.draw();
       this.over.draw();
     } else {
-      // this.soundsAndEffects("gameOver");
       this.player.drawDead();
     }
   }

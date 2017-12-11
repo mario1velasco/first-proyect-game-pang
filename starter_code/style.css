@@ -1,6 +1,13 @@
+@font-face {
+    font-family: myFont;
+    src: local(Pixel-Miners.otf);
+    src: url(./fonts/Pixel-Miners.otf);
+}
+
 *{
   margin: 0;
   padding: 0;
+  font-family: myFont;
 }
 body {
   text-align: center;
@@ -36,13 +43,19 @@ body button {
   flex-direction: column;
 }
 #div-points{
+  margin-top: 20px;
   display: flex;
   justify-content: center;
 }
 .span-div{
   margin-left: 30px;
 }
-
+#logo-info{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+}
 #logo{
   width: 60%
 }
