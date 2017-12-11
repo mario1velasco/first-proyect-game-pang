@@ -23,7 +23,6 @@ Over.prototype.isReady = function() {
 };
 
 Over.prototype.draw = function() {
-  // debugger
   this.ctx.drawImage(
     this.sprite,
     (this.canvas.width - 170) - this.width,
@@ -31,7 +30,6 @@ Over.prototype.draw = function() {
     this.width,
     this.height
   );
-  // debugger
   if (this.win) {
     this.drawEnd(70, 330);
     this.growing(200);
@@ -39,7 +37,6 @@ Over.prototype.draw = function() {
     this.drawContinue(170, 330);
     this.growing(300);
   }
-
 };
 
 Over.prototype.growing = function(width) {
@@ -49,11 +46,9 @@ Over.prototype.growing = function(width) {
   this.height = this.sprite.height * this.sprite.scale;
 };
 
-  Over.prototype.drawContinue = function(x, y) {
-  //1100 son 13s lo justo para poner un sonido
-  // debugger
+Over.prototype.drawContinue = function(x, y) {
   if (this.startCountdown) {
-    this.startCountdown=false;
+    this.startCountdown = false;
     this.countdown = 870;
   }
   if (this.countdown <= 870) {
@@ -67,14 +62,14 @@ Over.prototype.growing = function(width) {
   }
   if (Math.floor(this.countdown / 80) > 0)
     this.countdown--;
-  else{
+  else {
     this.startCountdown = true;
   }
 };
 Over.prototype.drawEnd = function(x, y) {
   // debugger
   if (this.startCountdown) {
-    this.startCountdown=false;
+    this.startCountdown = false;
     this.countdown = 240;
   }
   if (this.countdown <= 870) {
@@ -85,7 +80,7 @@ Over.prototype.drawEnd = function(x, y) {
   }
   if (Math.floor(this.countdown / 80) > 0)
     this.countdown--;
-  else{
+  else {
     this.startCountdown = true;
   }
 };

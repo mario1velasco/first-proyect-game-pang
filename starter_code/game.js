@@ -8,14 +8,11 @@ function Game(canvasId, width, height) {
   this.canvas = document.getElementById(canvasId);
   this.ctx = this.canvas.getContext('2d');
   this.requestId = undefined;
-  // this.beginCountdown = true;
-  // this.countdown = 180;
   this.maxShoots = 1;
   this.weaponSelect = 1;
-
   this.loadFirstTime = true;
   this.optionSelected = "";
-  this.optionCounter = 0;
+  this.optionCounter = 900;
   this.points = 0;
   if (localStorage.recordPoints)
     this.recordPoints = localStorage.recordPoints;
@@ -24,10 +21,7 @@ function Game(canvasId, width, height) {
   this.arrayLifes = [];
   this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 490, 30, 7));
   this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 530, 30, 7));
-  // this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 570, 30, 7));
-  this.isDead = false;
   this.gameLevel = 1;
-  // document.onkeydown = this.keyDown.bind(this);
   this.bg = "";
   this.win = "";
   this.over = "";
@@ -42,7 +36,7 @@ Game.prototype.loadValues = function() {
   this.player = new Player(this.canvas, "./images/pang.png", 370, this.height);
 
   this.beginCountdown = true;
-  this.countdown = 180;
+  this.countdown = 280;
   this.weaponsShoot = [];
   this.arrayOptionsBox = [];
   this.isDead = false;
@@ -53,107 +47,10 @@ Game.prototype.loadValues = function() {
     this.arrayBaloons.push(new Baloon(this.canvas, "./images/baloon1.png", ballPositionX, ballPositiony, 1.5, 1, 2));
   }
   this.soundsAndEffects("stage" + (Math.floor(Math.random() * 3) + 1));
-
   document.onkeydown = this.keyDown.bind(this);
   document.onkeyup = this.keyUp.bind(this);
 };
 
-Game.prototype.soundsAndEffects = function(val) {
-  switch (val) {
-    case "stage1":
-      var audio = document.getElementById('music');
-      var source = document.getElementById('music-source');
-      source.setAttribute("src", "./sounds/stage1.mp3");
-      audio.load(); //call this to just preload the audio without playing
-      audio.play(); //call this to play the song right away
-      break;
-    case "stage2":
-      audio = document.getElementById('music');
-      source = document.getElementById('music-source');
-      source.setAttribute("src", "./sounds/stage2.mp3");
-      audio.load(); //call this to just preload the audio without playing
-      audio.play(); //call this to play the song right away
-      break;
-    case "stage3":
-      audio = document.getElementById('music');
-      source = document.getElementById('music-source');
-      source.setAttribute("src", "./sounds/stage3.mp3");
-      audio.load(); //call this to just preload the audio without playing
-      audio.play(); //call this to play the song right away
-      break;
-    case "continue":
-      if (this.over.countdown === 870) {
-        audio = document.getElementById('music');
-        source = document.getElementById('music-source');
-        source.setAttribute("src", "./sounds/continue.mp3");
-        audio.load(); //call this to just preload the audio without playing
-        audio.play(); //call this to play the song right away
-      }
-      break;
-    case "gameOver":
-      if (this.over.countdown === 80) {
-        this.over.countdown--;
-        audio = document.getElementById('music');
-        source = document.getElementById('music-source');
-        source.setAttribute("src", "./sounds/gameOver.mp3");
-        audio.load(); //call this to just preload the audio without playing
-        audio.play(); //call this to play the song right away
-      }
-      break;
-    case "intro":
-      audio = document.getElementById('music');
-      source = document.getElementById('music-source');
-      source.setAttribute("src", "./sounds/intro.mp3");
-      audio.load(); //call this to just preload the audio without playing
-      audio.play(); //call this to play the song right away
-      break;
-    case "speedUp":
-      audio = document.getElementById('music');
-      source = document.getElementById('music-source');
-      source.setAttribute("src", "./sounds/speedUp.mp3");
-      audio.load(); //call this to just preload the audio without playing
-      audio.play(); //call this to play the song right away
-      break;
-    case "stageClear":
-      if (this.win.countdown === 870) {
-        audio = document.getElementById('music');
-        source = document.getElementById('music-source');
-        source.setAttribute("src", "./sounds/stageClear.mp3");
-        audio.load(); //call this to just preload the audio without playing
-        audio.play(); //call this to play the song right away
-      }
-      break;
-    case "ballColision":
-      audio = document.getElementById('effects');
-      source = document.getElementById('effects-source');
-      source.setAttribute("src", "./sounds/ballColision.wav");
-      audio.load(); //call this to just preload the audio without playing
-      audio.play(); //call this to play the song right away
-      break;
-    case "dead":
-      audio = document.getElementById('effects');
-      source = document.getElementById('effects-source');
-      source.setAttribute("src", "./sounds/dead.wav");
-      audio.load(); //call this to just preload the audio without playing
-      audio.play(); //call this to play the song right away
-      break;
-    case "optionBox":
-      audio = document.getElementById('effects');
-      source = document.getElementById('effects-source');
-      source.setAttribute("src", "./sounds/optionBox.wav");
-      audio.load(); //call this to just preload the audio without playing
-      audio.play(); //call this to play the song right away
-      break;
-    case "shoot":
-      audio = document.getElementById('effects');
-      source = document.getElementById('effects-source');
-      source.setAttribute("src", "./sounds/shoot.wav");
-      audio.load(); //call this to just preload the audio without playing
-      audio.play(); //call this to play the song right away
-      break;
-    default:
-  }
-};
 
 Game.prototype.clear = function() {
   this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -185,7 +82,14 @@ Game.prototype.draw = function() {
     this.player.draw();
     this.paintLifes();
     this.paintBaloons(false, this.optionSelected);
+    this.apllyOptions(this.optionSelected);
     this.paintOptionBoxs();
+    this.arrayOptionsBox.forEach((function(element, index, array) {
+      if (this.playerColision(element, index, array)) {
+        this.soundsAndEffects("optionBox");
+        this.pickAnOptionBox(element, index, array);
+      }
+    }).bind(this));
     this.arrayBaloons.forEach((function(element, index, array) {
       if (this.playerColision(element, index, array)) {
         //Change this.player.die set to true and sprite
@@ -197,12 +101,6 @@ Game.prototype.draw = function() {
         element.updateBaloon();
         element.updateBaloon();
         this.player.draw();
-      }
-    }).bind(this));
-    this.arrayOptionsBox.forEach((function(element, index, array) {
-      if (this.playerColision(element, index, array)) {
-        this.soundsAndEffects("optionBox");
-        this.pickAnOptionBox(element, index, array);
       }
     }).bind(this));
   } else {
@@ -218,6 +116,7 @@ Game.prototype.drawCountdownBeginning = function(x, y) {
     this.ctx.font = 'bold 70px serif';
     this.ctx.fillStyle = 'black';
     this.ctx.fillText('Are you ready? ' + Math.floor(this.countdown / 80), x, y);
+    this.ctx.fillText('LEVEL ' + this.gameLevel, x, y-50);
   }
   if (Math.floor(this.countdown / 80) > 0) {
     this.countdown--;
@@ -304,35 +203,47 @@ Game.prototype.paintBaloons = function(beginCountdown, option) {
     });
   } else {
     this.arrayBaloons.forEach(function(element, index, array) {
-      if (option === 3) {
-        array.splice(Math.floor(Math.random() * index), 1);
-        array.splice(Math.floor(Math.random() * index), 1);
-        array.splice(Math.floor(Math.random() * index), 1);
-        option = 0;
-      } else if (option === 4) {
-        this.player.speed = 4;
-        option = 0;
-      } else if (option === 5 && this.optionCounter < 900) {
+      if (option === 5 && this.optionCounter > 0) {
         element.draw();
-        this.optionCounter++;
-      } else if (option === 6 && this.optionCounter < 900) {
+      } else if (option === 6 && this.optionCounter > 0) {
         element.gravity = 0;
         element.updateBaloon();
-        this.optionCounter++;
-      } else if (option === 7) {
-        if (this.arrayLifes.length === 1) {
-          this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 530, 30, 7));
-        } else if (this.arrayLifes.length === 2) {
-          this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 570, 30, 7));
-        } else if (this.arrayLifes.length === 3) {
-          this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 610, 30, 7));
-        }
-        option = 0;
       } else {
         element.gravity = 0.1;
         element.updateBaloon();
       }
     }.bind(this));
+  }
+
+};
+Game.prototype.apllyOptions = function (option) {
+  if (option === 3) {
+    this.arrayBaloons.splice(Math.floor(Math.random() * this.arrayBaloons.length), 1);
+    this.arrayBaloons.splice(Math.floor(Math.random() * this.arrayBaloons.length), 1);
+    this.arrayBaloons.splice(Math.floor(Math.random() * this.arrayBaloons.length), 1);
+    option = 0;
+  } else if (option === 4) {
+    this.player.speed = 4;
+    option = 0;
+  } else if (option === 5 && this.optionCounter > 0) {
+    this.ctx.font = 'bold 70px serif';
+    this.ctx.fillStyle = 'black';
+    this.ctx.fillText(Math.floor(this.optionCounter / 80), 300, 120);
+    this.optionCounter--;
+  } else if (option === 6 && this.optionCounter > 0) {
+    this.ctx.font = 'bold 70px serif';
+    this.ctx.fillStyle = 'black';
+    this.ctx.fillText(Math.floor(this.optionCounter / 80), 300, 120);
+    this.optionCounter--;
+  } else if (option === 7) {
+    if (this.arrayLifes.length === 1) {
+      this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 530, 30, 7));
+    } else if (this.arrayLifes.length === 2) {
+      this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 570, 30, 7));
+    } else if (this.arrayLifes.length === 3) {
+      this.arrayLifes.push(new Options(this.canvas, "./images/options2.png", 610, 30, 7));
+    }
+    option = 0;
   }
   if (option === 0) {
     this.optionSelected = 0;
@@ -517,14 +428,14 @@ Game.prototype.pickAnOptionBox = function(element, index, array) {
     case 5:
       //ball stop
       this.optionSelected = 5;
-      this.optionCounter = 0;
+      this.optionCounter = 900;
       this.points += 20;
       array.splice(index, 1);
       break;
     case 6:
       //crazy gravity
       this.optionSelected = 6;
-      this.optionCounter = 0;
+      this.optionCounter = 900;
       this.points += 30;
       array.splice(index, 1);
       break;
@@ -536,5 +447,104 @@ Game.prototype.pickAnOptionBox = function(element, index, array) {
       break;
     default:
       this.optionSelected = "";
+  }
+};
+
+
+
+Game.prototype.soundsAndEffects = function(val) {
+  switch (val) {
+    case "stage1":
+      var audio = document.getElementById('music');
+      var source = document.getElementById('music-source');
+      source.setAttribute("src", "./sounds/stage1.mp3");
+      audio.load(); //call this to just preload the audio without playing
+      audio.play(); //call this to play the song right away
+      break;
+    case "stage2":
+      audio = document.getElementById('music');
+      source = document.getElementById('music-source');
+      source.setAttribute("src", "./sounds/stage2.mp3");
+      audio.load(); //call this to just preload the audio without playing
+      audio.play(); //call this to play the song right away
+      break;
+    case "stage3":
+      audio = document.getElementById('music');
+      source = document.getElementById('music-source');
+      source.setAttribute("src", "./sounds/stage3.mp3");
+      audio.load(); //call this to just preload the audio without playing
+      audio.play(); //call this to play the song right away
+      break;
+    case "continue":
+      if (this.over.countdown === 870) {
+        audio = document.getElementById('music');
+        source = document.getElementById('music-source');
+        source.setAttribute("src", "./sounds/continue.mp3");
+        audio.load(); //call this to just preload the audio without playing
+        audio.play(); //call this to play the song right away
+      }
+      break;
+    case "gameOver":
+      if (this.over.countdown === 80) {
+        this.over.countdown--;
+        audio = document.getElementById('music');
+        source = document.getElementById('music-source');
+        source.setAttribute("src", "./sounds/gameOver.mp3");
+        audio.load(); //call this to just preload the audio without playing
+        audio.play(); //call this to play the song right away
+      }
+      break;
+    case "intro":
+      audio = document.getElementById('music');
+      source = document.getElementById('music-source');
+      source.setAttribute("src", "./sounds/intro.mp3");
+      audio.load(); //call this to just preload the audio without playing
+      audio.play(); //call this to play the song right away
+      break;
+    case "speedUp":
+      audio = document.getElementById('music');
+      source = document.getElementById('music-source');
+      source.setAttribute("src", "./sounds/speedUp.mp3");
+      audio.load(); //call this to just preload the audio without playing
+      audio.play(); //call this to play the song right away
+      break;
+    case "stageClear":
+      if (this.win.countdown === 870) {
+        audio = document.getElementById('music');
+        source = document.getElementById('music-source');
+        source.setAttribute("src", "./sounds/stageClear.mp3");
+        audio.load(); //call this to just preload the audio without playing
+        audio.play(); //call this to play the song right away
+      }
+      break;
+    case "ballColision":
+      audio = document.getElementById('effects');
+      source = document.getElementById('effects-source');
+      source.setAttribute("src", "./sounds/ballColision.wav");
+      audio.load(); //call this to just preload the audio without playing
+      audio.play(); //call this to play the song right away
+      break;
+    case "dead":
+      audio = document.getElementById('effects');
+      source = document.getElementById('effects-source');
+      source.setAttribute("src", "./sounds/dead.wav");
+      audio.load(); //call this to just preload the audio without playing
+      audio.play(); //call this to play the song right away
+      break;
+    case "optionBox":
+      audio = document.getElementById('effects');
+      source = document.getElementById('effects-source');
+      source.setAttribute("src", "./sounds/optionBox.wav");
+      audio.load(); //call this to just preload the audio without playing
+      audio.play(); //call this to play the song right away
+      break;
+    case "shoot":
+      audio = document.getElementById('effects');
+      source = document.getElementById('effects-source');
+      source.setAttribute("src", "./sounds/shoot.wav");
+      audio.load(); //call this to just preload the audio without playing
+      audio.play(); //call this to play the song right away
+      break;
+    default:
   }
 };
