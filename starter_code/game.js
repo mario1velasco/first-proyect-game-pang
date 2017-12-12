@@ -32,7 +32,7 @@ Game.prototype.loadValues = function() {
   //Initialize values at the beggining and when you die
   this.bg = new Background(this.canvas, "./images/bg8.png", this.width, this.height);
   this.win = new Over(this.canvas, "./images/You_win_this_time.png", true);
-  this.over = new Over(this.canvas, "./images/game-over.png",false);
+  this.over = new Over(this.canvas, "./images/game-over.png", false);
   this.player = new Player(this.canvas, "./images/pang.png", 370, this.height);
 
   this.beginCountdown = true;
@@ -49,8 +49,22 @@ Game.prototype.loadValues = function() {
   this.soundsAndEffects("stage" + (Math.floor(Math.random() * 3) + 1));
   document.onkeydown = this.keyDown.bind(this);
   document.onkeyup = this.keyUp.bind(this);
+  document.getElementById("start-button").onclick=this.startGame.bind(this);
 };
 
+Game.prototype.startGame = function () {
+  if (this.requestId) {
+    window.cancelAnimationFrame(this.requestId);
+    this.requestId = undefined;
+    this.game = new Game("canvas-fb", 640, 480);
+    this.game.loadValues();
+    this.game.draw();
+  } else {
+    this.game = new Game("canvas-fb", 640, 480);
+    this.game.loadValues();
+    this.game.draw();
+  }
+};
 
 Game.prototype.clear = function() {
   this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -84,25 +98,8 @@ Game.prototype.draw = function() {
     this.paintBaloons(false, this.optionSelected);
     this.apllyOptions(this.optionSelected);
     this.paintOptionBoxs();
-    this.arrayOptionsBox.forEach((function(element, index, array) {
-      if (this.playerColision(element, index, array)) {
-        this.soundsAndEffects("optionBox");
-        this.pickAnOptionBox(element, index, array);
-      }
-    }).bind(this));
-    this.arrayBaloons.forEach((function(element, index, array) {
-      if (this.playerColision(element, index, array)) {
-        //Change this.player.die set to true and sprite
-        this.soundsAndEffects("intro");
-        this.soundsAndEffects("dead");
-        this.isDead = true;
-        this.player.die();
-        element.updateBaloon();
-        element.updateBaloon();
-        element.updateBaloon();
-        this.player.draw();
-      }
-    }).bind(this));
+    this.playerGetAnOption();
+    this.checkIfPlayerDie();
   } else {
     //Player die
     this.playerDie();
@@ -115,7 +112,7 @@ Game.prototype.drawCountdownBeginning = function(x, y) {
     this.ctx.font = 'bold 70px serif';
     this.ctx.fillStyle = 'black';
     this.ctx.fillText('Are you ready? ' + Math.floor(this.countdown / 80), x, y);
-    this.ctx.fillText('LEVEL ' + this.gameLevel, x, y-50);
+    this.ctx.fillText('LEVEL ' + this.gameLevel, x, y - 50);
   }
   if (Math.floor(this.countdown / 80) > 0) {
     this.countdown--;
@@ -213,7 +210,7 @@ Game.prototype.paintBaloons = function(beginCountdown, option) {
   }
 
 };
-Game.prototype.apllyOptions = function (option) {
+Game.prototype.apllyOptions = function(option) {
   if (option === 3) {
     this.arrayBaloons.splice(Math.floor(Math.random() * this.arrayBaloons.length), 1);
     this.arrayBaloons.splice(Math.floor(Math.random() * this.arrayBaloons.length), 1);
@@ -254,11 +251,42 @@ Game.prototype.paintOptionBoxs = function() {
       array.splice(index, 1);
     }
   });
+
+};
+
+Game.prototype.playerGetAnOption = function () {
+  this.arrayOptionsBox.forEach((function(element, index, array) {
+    if (this.playerColision(element, index, array)) {
+      this.soundsAndEffects("optionBox");
+      this.pickAnOptionBox(element, index, array);
+    }
+  }).bind(this));
+};
+
+Game.prototype.checkIfPlayerDie = function () {
+  this.arrayBaloons.forEach((function(element, index, array) {
+    if (this.playerColision(element, index, array)) {
+      //Change this.player.die set to true and sprite
+      this.soundsAndEffects("intro");
+      this.soundsAndEffects("dead");
+      this.isDead = true;
+      this.player.die();
+      element.updateBaloon();
+      element.updateBaloon();
+      element.updateBaloon();
+      this.player.draw();
+    }
+  }).bind(this));
 };
 
 Game.prototype.keyDown = function() {
-  if (!this.isDead)
+  if (!this.isDead){
     this.player.onKeyDown();
+  }else{
+    if (event.keyCode == Y_KEY) {
+      this.startGame();
+    }
+  }
 };
 Game.prototype.keyUp = function() {
   this.player.onKeyUp();
@@ -380,8 +408,8 @@ Game.prototype.dividedBaloon = function(element, index, array) {
     array.splice(index, 1);
     //CREATE AN OPTION BOX
     if (Math.floor(Math.random() * 3) === 1) {
-      this.arrayOptionsBox.push(new Options(this.canvas, "./images/options2.png", element.x, element.y,// 4));
-      Math.floor(Math.random() * 8)));
+      this.arrayOptionsBox.push(new Options(this.canvas, "./images/options2.png", element.x, element.y, // 4));
+        Math.floor(Math.random() * 8)));
     }
   }
 };
